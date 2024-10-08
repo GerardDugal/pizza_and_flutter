@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:pizza_and_flutter/widget/my_orders.dart';
+
 
 class StartScreen extends StatefulWidget {
   const StartScreen({super.key, required String title});
@@ -44,7 +46,8 @@ class _StartScreenState extends State<StartScreen> {
                     Panel(name: "Отзыв", color: Colors.white, TextColor: Colors.black, icon: Ionicons.chatbox_ellipses_outline),
                   ],
                 ),
-              )
+              ),
+              
             ]
           ),
       )
@@ -88,16 +91,10 @@ class Panel extends StatefulWidget {
 int _counter = 0;
 
 class _PanelsState extends State<Panel> {
-  
+
   @override
   Widget build(BuildContext context) {
     double ScreenWidth = MediaQuery.sizeOf(context).width;
-
-    void count(){
-      setState(() {
-        _counter++;
-      });
-    }
 
     return Center(
       child: InkWell(
@@ -119,7 +116,7 @@ class _PanelsState extends State<Panel> {
                 Icon(widget.icon, color: widget.TextColor, size: 90,),
                 Divider(color: widget.TextColor, thickness: 0.4,),
                 Text(
-                  "${widget.name} $_counter",
+                  "${widget.name}",
                   style: TextStyle(
                     color: widget.TextColor,
                     fontFamily: "Inter",
@@ -132,11 +129,14 @@ class _PanelsState extends State<Panel> {
           ),
           ),
           onTap: () {
-        count();
-        
+            print("Tap");
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const MyOrders()),
+            );
         },
-          
       ),
     ); 
   }
 }
+

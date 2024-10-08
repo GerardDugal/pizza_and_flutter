@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: const StartScreen(title: 'Flutter Demo Home Page'),
+      home: const StartScreen(title: 'Pizza_and_flutter'),
     );
   }
 }

@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 const String time = "1:30"; // Время, в колторое заказ будет завершен, будет хранить в себе время, когда заказ оказался у пользователя
 
 enum Status {
@@ -14,14 +16,16 @@ Map<Status, String> StatusMap =  {
   Status.uncompleted : "НЕ ВЫПОЛНЕН"
 };
 
-abstract class Orders {
+abstract class Orders extends StatefulWidget {
   final int price;
   final int number;
   final String date;
   final Status status;
-  // late String _timeready; // Время, когда заказ будет готов
 
-  Orders (this.price, this.number, this.date, this.status);
-
-  // set timeready(String value) => _timeready = value; 
+  Orders({ 
+    required this.price,
+    required this.number,
+    required this.date,
+    required this.status,
+  });
 }

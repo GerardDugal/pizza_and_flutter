@@ -2,34 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:pizza_and_flutter/widget/my_orders/orders.dart';
 
-class PickUp extends StatefulWidget implements Orders{
+class Deliv extends Orders{
   
-  @override
-  final int price;
-  @override
-  final int number;
-  @override
-  final String date;
-  @override
-  final Status status;
-  // @override
-  // late String _timeready;
-
-
-  final String pickup_adress;
-  final String pickup_time;
-
-  // @override
-  // set timeready(String value) => _timeready = value;
-
-  PickUp({super.key, required this.price, required this.number, required this.date, required this.status, required this.pickup_adress, required this.pickup_time});
+  Deliv({
+    required int price,
+    required int number,
+    required String date,
+    required Status status,
+  }) : super(price: price, number: number, date: date, status: status);
 
   @override
-  State<PickUp> createState() => _PickUpState();
+  State<Deliv> createState() => _DelivState();
+  
   
 }
 
-class _PickUpState extends State<PickUp> {
+class _DelivState extends State<Deliv> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -42,14 +30,14 @@ class _PickUpState extends State<PickUp> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Container( // Иконка для самовывоза
+          Container( // Иконка для Доставки
             height: 120,
             width: 120,
-            decoration: BoxDecoration(color: const Color.fromARGB(255, 247, 218, 218), borderRadius: BorderRadius.circular(10)),
+            decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(10)),
             child: Column(
               children: [
-                Padding(padding: EdgeInsets.only(top: 10), child: Icon(Ionicons.bag_handle_outline, size: 70, color: Colors.grey[600],)),
-                Center(child: Text("Самовывоз", style: TextStyle(color: Colors.grey[600]),))
+                Padding(padding: EdgeInsets.only(top: 10), child: Icon(Ionicons.home_outline, size: 70, color: Colors.grey[600],)),
+                Center(child: Text("Доставка", style: TextStyle(color: Colors.grey[600]),))
               ],
             ),
           ),
@@ -76,8 +64,38 @@ class _PickUpState extends State<PickUp> {
                 ),),
                 Divider(height: 15, color: Colors.white,),
                 //Статус заказа
-                (widget.status == Status.completed)
+                (widget.status == Status.inprogress)
                 ? Container(
+                  decoration: BoxDecoration(
+                    color: Colors.red, 
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                  child: Text(
+                    "${StatusMap[widget.status]}",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'Inter',
+                      fontSize: 12
+                    ),
+                  )
+                ) :
+                (widget.status == Status.uncompleted)
+                ? Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Text(
+                    "${StatusMap[widget.status]}",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 12
+                    ),
+                  )
+                ) :
+                Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5),
                   ),
@@ -89,22 +107,7 @@ class _PickUpState extends State<PickUp> {
                       fontSize: 12
                     ),
                   )
-                ): 
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.red, 
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
-                  child: Text(
-                    "${StatusMap[widget.status]}${widget.pickup_time}",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'Inter',
-                      fontSize: 12
-                    ),
-                  ),
-                )
+                ) 
               ],
             ),
           ),
@@ -116,16 +119,9 @@ class _PickUpState extends State<PickUp> {
                 // номер заказа
                 Text("№${widget.number.toString()}", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
                 Divider(height: 41,),
-                // адрес доставки
-                (widget.status == Status.completed)
-                ? Container(
+                Container(
                   height: 40,
-                  width: 70,
-                ):
-                  Container(
-                  height: 40,
-                  width: 70,
-                  child: Text(widget.pickup_adress, style: TextStyle(fontSize: 10, color: Colors.black54,),), )
+                  width: 70,)
               ],
             ),
           ),

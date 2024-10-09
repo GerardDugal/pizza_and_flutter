@@ -130,10 +130,11 @@ class _PanelsState extends State<Panel> {
           ),
           onTap: () {
             print("Tap");
+            if (widget.name == "Мои заказы"){
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => const MyOrders()),
-            );
+            );}
         },
       ),
     ); 

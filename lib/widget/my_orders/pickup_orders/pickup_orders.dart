@@ -12,9 +12,11 @@ class PickUp extends Orders{
     required int number,
     required String date,
     required Status status,
+    required int count_positions,
+    required DetailedStatus detailedStatus,
     required this.pickup_adress,
     required this.pickup_time,
-  }) : super(price: price, number: number, date: date, status: status);
+  }) : super(price: price, number: number, date: date, status: status, count_positions: count_positions, detailedStatus: detailedStatus,);
 
   @override
   State<PickUp> createState() => _PickUpState();
@@ -61,13 +63,13 @@ class _PickUpState extends State<PickUp> {
                   ),),
                   // цена заказа
                   Text("${widget.price.toString()} ₽",
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.red,
                     fontSize: 21,
                     fontFamily: 'Inter',
                     fontWeight: FontWeight.w800
                   ),),
-                  Divider(height: 15, color: Colors.white,),
+                  const Divider(height: 15, color: Colors.white,),
                   //Статус заказа
                   (widget.status == Status.completed)
                   ? Container(
@@ -88,10 +90,10 @@ class _PickUpState extends State<PickUp> {
                       color: Colors.red, 
                       borderRadius: BorderRadius.circular(5),
                     ),
-                    padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                     child: Text(
                       "${StatusMap[widget.status]}${widget.pickup_time}",
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white,
                         fontFamily: 'Inter',
                         fontSize: 12
@@ -107,18 +109,18 @@ class _PickUpState extends State<PickUp> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   // номер заказа
-                  Text("№${widget.number.toString()}", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                  Divider(height: 41,),
+                  Text("№${widget.number.toString()}", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                  const Divider(height: 41,),
                   // адрес доставки
                   (widget.status == Status.completed)
-                  ? Container(
+                  ? const SizedBox(
                     height: 40,
                     width: 70,
                   ):
-                    Container(
+                    SizedBox(
                     height: 40,
                     width: 70,
-                    child: Text(widget.pickup_adress, style: TextStyle(fontSize: 10, color: Colors.black54,),), )
+                    child: Text(widget.pickup_adress, style: const TextStyle(fontSize: 10, color: Colors.black54,),), )
                 ],
               ),
             ),

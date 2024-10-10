@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 const String time = "1:30"; // Время, в колторое заказ будет завершен, будет хранить в себе время, когда заказ оказался у пользователя
 const DetailedStatus detailedStatus = DetailedStatus.adopted; 
 
-List<String> ListOfOrders = ["Пицца", "хуй с солью", "Говно", "хер моржовый"];
+List<Widget> ListOfOrders = [Text("Пицца "), Text("хуй с солью "),Text("Говно "), Text("хер моржовый ")];
 
 enum Status {
   taketo,
@@ -20,12 +20,48 @@ enum DetailedStatus {
   readyToGet
 }
 
-Map<DetailedStatus, Widget> DetailedStatusMap =  {
-  DetailedStatus.adopted : Text("Принят \nОтдаём в работу.", textAlign: TextAlign.center,),
-  DetailedStatus.putToWork : Text("Отдан в работу \nБыстро и только для вас", textAlign: TextAlign.center,),
-  DetailedStatus.toCourier : Text("Передан курьеру. \nСкоро будет у вас.", textAlign: TextAlign.center,),
-  DetailedStatus.delivered : Text("Доставлен. \nПриятного аппетита!", textAlign: TextAlign.center,),
-  DetailedStatus.readyToGet : Text("Готов к выдачи. \nСкоро будет у вас.", textAlign: TextAlign.center,)
+
+Map<DetailedStatus, Widget> DetailedStatusMap = {
+  DetailedStatus.adopted : Center(
+    child: Column(
+      children: [
+        Text("Принят"),
+        Text("Отдаём в работу.")
+      ],
+    ),
+  ),
+  DetailedStatus.putToWork : Center(
+    child: Column(
+      children: [
+        Text("Отдан в работу"),
+        Text("Быстро и только для вас.")
+      ],
+    ),
+  ),
+  DetailedStatus.toCourier : Center(
+    child: Column(
+      children: [
+        Text("Передан курьеру."),
+        Text("Скоро будет у вас.")
+      ],
+    ),
+  ),
+  DetailedStatus.delivered : Center(
+    child: Column(
+      children: [
+        Text("Доставлен."),
+        Text("Приятного аппетита!")
+      ],
+    ),
+  ),
+  DetailedStatus.readyToGet : Center(
+    child: Column(
+      children: [
+        Text("Готов к выдачи."),
+        Text("Скоро будет у вас.")
+      ],
+    ),
+  ),
 };
 
 Map<Status, String> StatusMap =  {
@@ -40,12 +76,17 @@ abstract class Orders extends StatefulWidget {
   final int number;
   final String date;
   final Status status;
+  final int count_positions;
+  final DetailedStatus detailedStatus;
+  
 
   Orders({ 
     required this.price,
     required this.number,
     required this.date,
     required this.status,
+    required this.count_positions,
+    required this.detailedStatus,
   });
 
 }

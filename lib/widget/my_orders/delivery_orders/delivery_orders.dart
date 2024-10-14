@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:pizza_and_flutter/widget/menu/dishes.dart';
 import 'package:pizza_and_flutter/widget/my_orders/delivery_orders/delivery_orders_more_detailed.dart';
 import 'package:pizza_and_flutter/widget/my_orders/orders.dart';
 
@@ -7,13 +8,14 @@ import 'package:pizza_and_flutter/widget/my_orders/orders.dart';
 class Deliv extends Orders{
   
   Deliv({
-    required int price,
+    required double price,
     required int number,
     required String date,
     required Status status,
     required int count_positions,
-    required DetailedStatus detailedStatus
-  }) : super(price: price, number: number, date: date, status: status, count_positions: count_positions, detailedStatus: detailedStatus);
+    required DetailedStatus detailedStatus,
+    required List<CartItem> dishList
+  }) : super(price: price, number: number, date: date, status: status, count_positions: count_positions, detailedStatus: detailedStatus, dishList: dishList);
 
   @override
   State<Deliv> createState() => _DelivState();

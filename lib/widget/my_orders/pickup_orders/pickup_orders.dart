@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:pizza_and_flutter/widget/menu/dishes.dart';
 import 'package:pizza_and_flutter/widget/my_orders/orders.dart';
 
 class PickUp extends Orders{
@@ -8,15 +9,16 @@ class PickUp extends Orders{
   final String pickup_time;
 
   PickUp({
-    required int price,
+    required double price,
     required int number,
     required String date,
     required Status status,
     required int count_positions,
     required DetailedStatus detailedStatus,
+    required List<CartItem> dishList,
     required this.pickup_adress,
     required this.pickup_time,
-  }) : super(price: price, number: number, date: date, status: status, count_positions: count_positions, detailedStatus: detailedStatus,);
+  }) : super(price: price, number: number, date: date, status: status, count_positions: count_positions, detailedStatus: detailedStatus, dishList: dishList);
 
   @override
   State<PickUp> createState() => _PickUpState();

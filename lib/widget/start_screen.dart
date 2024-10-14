@@ -6,7 +6,7 @@ import 'package:pizza_and_flutter/widget/my_orders/my_orders_main.dart';
 
 
 class StartScreen extends StatefulWidget {
-  const StartScreen({super.key, required String title});
+  const StartScreen({super.key});
 
   @override
   State<StartScreen> createState() => _StartScreenState();
@@ -140,7 +140,7 @@ class _PanelsState extends State<Panel> {
             if (widget.name == "Доставка"){
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const Menu()),
+              MaterialPageRoute(builder: (context) => Menu()),
             );
             }
         },

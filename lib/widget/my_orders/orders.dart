@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:pizza_and_flutter/widget/menu/dishes.dart';
 
 const String time = "1:30"; // Время, в колторое заказ будет завершен, будет хранить в себе время, когда заказ оказался у пользователя
 const DetailedStatus detailedStatus = DetailedStatus.adopted; 
 
-List<Widget> ListOfOrders = [Text("Пицца "), Text("хуй с солью "),Text("Говно "), Text("хер моржовый ")];
 
 enum Status {
   taketo,
@@ -72,13 +72,13 @@ Map<Status, String> StatusMap =  {
 };
 
 abstract class Orders extends StatefulWidget {
-  final int price;
+  final double price;
   final int number;
   final String date;
   final Status status;
   final int count_positions;
   final DetailedStatus detailedStatus;
-  
+  final List<CartItem> dishList;
 
   Orders({ 
     required this.price,
@@ -87,6 +87,7 @@ abstract class Orders extends StatefulWidget {
     required this.status,
     required this.count_positions,
     required this.detailedStatus,
+    required this.dishList,
   });
 
 }

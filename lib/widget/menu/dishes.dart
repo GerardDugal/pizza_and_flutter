@@ -8,6 +8,8 @@ class CartItem {
   final int weight;
   int quantity;
   final dynamic picture;
+  final List<String> additional_filling;
+  final String filling;
 
   CartItem({
     required this.dish_name,
@@ -15,8 +17,8 @@ class CartItem {
     required this.weight,
     this.quantity = 1,
     required this.picture,
-    List<String>? filling,
-    List<String>? additional_filling, // Убираем значение по умолчанию
+    required this.filling,
+    required this.additional_filling, // Убираем значение по умолчанию
   });// Инициализируем с помощью значения по умолчанию
 }
 
@@ -29,13 +31,13 @@ class CartProvider with ChangeNotifier {
 
   List<CartItem> get items => _items;
 
-  void addItem(String name, int price, int weight, dynamic picture) {
+  void addItem(String name, int price, int weight, dynamic picture, final String filling, final List<String> adding) {
     // Проверка, есть ли уже такой товар в корзине
     final index = _items.indexWhere((item) => item.dish_name == name);
     if (index >= 0) {
       _items[index].quantity += 1;
     } else {
-      _items.add(CartItem(dish_name: name, price: price, weight: weight, picture: picture));
+      _items.add(CartItem(dish_name: name, price: price, weight: weight, picture: picture, filling: filling, additional_filling: adding));
     }
     notifyListeners();  // Обновляем UI
   }
@@ -91,6 +93,8 @@ class Dishes extends StatelessWidget {
   final int weight;
   final dynamic picture;
   bool with_fillings;
+  final List<Map<String, int>> additional_filling;
+  final List<Map<String, int>> filling;
 
   Dishes({
     required this.dish_name,
@@ -98,8 +102,8 @@ class Dishes extends StatelessWidget {
     required this.weight,
     required this.picture,
     this.with_fillings = false,
-    List<String>? filling ,
-    List<String>? additional_filling
+    required this.filling ,
+    required this.additional_filling
   });
 
   @override
@@ -160,9 +164,9 @@ class Dishes extends StatelessWidget {
                         imageUrl: "https://i.pinimg.com/originals/63/a7/cf/63a7cf823cbc743612bc449a222fb46f.jpg",
                         basePrice: price,
                         weight: weight,
-                        fillings: [{"залупа" : 0}, {"хуй" : 0}, {"Говно" : 0}],
-                        additionalFillings: [{"Курица" : 70}, {"Говядина" : 50}, {"Свинина" : 110}],))
-                      ) : cart.addItem(dish_name, price, weight, picture);
+                        fillings: filling,
+                        additionalFillings: additional_filling,))
+                      ) : cart.addItem(dish_name, price, weight, picture, "", []);
                       },
                       child: Text("${price} р"),
                     ),

@@ -10,6 +10,8 @@ List<Widget> ListMenu = [
     price: 666,
     weight: 1050,
     picture: null,
+    filling: const [],
+    additional_filling: [],
   ),
   Dishes(
     dish_name: "вяленная конская залупа",
@@ -17,6 +19,8 @@ List<Widget> ListMenu = [
     weight: 1050,
     picture: null,
     with_fillings: true,
+    filling: const [{"залупа" : 0}, {"хуй" : 0}, {"Говно" : 0}],
+    additional_filling: [{"Курица" : 70}, {"Говядина" : 50}, {"Свинина" : 110}],
   ),
   Dishes(
     dish_name: "хер моржовый",
@@ -24,6 +28,8 @@ List<Widget> ListMenu = [
     weight: 1050,
     picture: null,
     with_fillings: true,
+    filling: const [{"залупа" : 0}, {"хуй" : 0}, {"Говно" : 0}],
+    additional_filling: [{"Курица" : 70}, {"Говядина" : 50}, {"Свинина" : 110}],
   )
 ];
 

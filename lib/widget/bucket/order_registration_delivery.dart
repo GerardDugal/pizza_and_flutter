@@ -19,6 +19,7 @@ class _CheckoutScreenDelivState extends State<CheckoutScreenDeliv> {
   final TextEditingController _floorController = TextEditingController();
   final TextEditingController _commentController = TextEditingController();
   TimeOfDay? _selectedPickupTime; // Выбранное время самовывоза
+  bool _orderSubmitted = false;
 
   // Выбор времени самовывоза
   Future<void> _selectPickupTime(BuildContext context) async {
@@ -31,6 +32,91 @@ class _CheckoutScreenDelivState extends State<CheckoutScreenDeliv> {
         _selectedPickupTime = picked;
       });
     }
+  }
+
+  // Показываем панель выбора оплаты
+  void _showPaymentOptions(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isDismissible: false, // Чтобы нельзя было закрыть свайпом
+      builder: (BuildContext bc) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter modalSetState) {
+            return _orderSubmitted
+                ? _buildOrderSuccessContent() // Показ галочки и сообщения об успехе
+                : _buildPaymentOptionsContent(modalSetState); // Показ вариантов оплаты
+          },
+        );
+      },
+    );
+  }
+
+  // Содержимое панели с вариантами оплаты
+  Widget _buildPaymentOptionsContent(StateSetter modalSetState) {
+    return Container(
+      height: 250,
+      padding: EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("Выберите способ оплаты", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          SizedBox(height: 10),
+          ListTile(
+            title: Text("Картой"),
+            leading: Radio(
+              value: 'card',
+              groupValue: 'payment',
+              onChanged: (value) {
+                modalSetState(() {
+                  _completeOrder(modalSetState);
+                });
+              },
+            ),
+          ),
+          ListTile(
+            title: Text("Наличными"),
+            leading: Radio(
+              value: 'cash',
+              groupValue: 'payment',
+              onChanged: (value) {
+                modalSetState(() {
+                  _completeOrder(modalSetState);
+                });
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Содержимое после отправки заказа (галочка и сообщение)
+  Widget _buildOrderSuccessContent() {
+    return Container(
+      height: 250,
+      padding: EdgeInsets.all(16),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.check_circle, color: Colors.green, size: 100),
+          SizedBox(height: 20),
+          Text("Ваш заказ отправлен на оформление", style: TextStyle(fontSize: 18)),
+        ],
+      ),
+    );
+  }
+
+  // Завершение заказа и обновление состояния
+  void _completeOrder(StateSetter modalSetState) {
+    // Обновляем состояние для отображения успеха
+    setState(() {
+      _orderSubmitted = true;
+    });
+
+    // Даем небольшую задержку перед закрытием модального окна
+    Future.delayed(Duration(seconds: 2), () {
+      Navigator.pop(context); // Закрываем модальное окно
+    });
   }
 
   @override
@@ -195,14 +281,18 @@ class _CheckoutScreenDelivState extends State<CheckoutScreenDeliv> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
+                    final List <CartItem> ListOfDishes = List.from(cart.items);
                     ListOfsDelivOrders.add(Deliv(number: 1,
                     price: cart.calctotalToPay(),
                     date: DateFormat('dd.MM.yyyy').format(DateTime.now()),
                     status: Status.inprogress,
                     count_positions: cart.positionsAmount,
                     detailedStatus: DetailedStatus.adopted,
-                    dishList: cart.items,));
+                    dishList: ListOfDishes,));
                     print("Оформить заказ");
+                    print(ListOfsDelivOrders);
+                    cart.clearCart();
+                    _showPaymentOptions(context);
                   },
                   child: Text("Оформить заказ"),
                 ),
@@ -214,3 +304,4 @@ class _CheckoutScreenDelivState extends State<CheckoutScreenDeliv> {
     );
   }
 }
+

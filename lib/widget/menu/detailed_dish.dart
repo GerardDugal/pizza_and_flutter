@@ -98,7 +98,6 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
-
             // Единичный выбор наполнения
             Column(
               children: widget.fillings.map((filling) {
@@ -195,7 +194,7 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
               // Кнопка "Добавить"
               ElevatedButton(
                 onPressed: () {
-                  cart.addItem(widget.dishName, calculateTotalPrice(), widget.weight, widget.imageUrl);
+                  cart.addItem(widget.dishName, calculateTotalPrice(), widget.weight, widget.imageUrl, selectedFilling!, selectedAdditionalFillings);
                   Navigator.pop(context);
                 },
                 child: Text("Добавить"),

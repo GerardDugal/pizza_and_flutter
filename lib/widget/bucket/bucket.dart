@@ -24,7 +24,9 @@ class CartScreen extends StatelessWidget {
                 price: item.price,
                 weight: item.weight,
                 quantity: item.quantity,
-                picture: item.picture);
+                picture: item.picture,
+                additional_filling: item.additional_filling,
+                filling: item.filling,);
               },
             ),
       bottomNavigationBar: Container(
@@ -57,6 +59,8 @@ class BucketMenu extends StatelessWidget{
   final int weight;
   final int quantity;
   final dynamic picture;
+  final List<String> additional_filling;
+  final String filling;
 
   BucketMenu({
       required this.dish_name,
@@ -64,6 +68,8 @@ class BucketMenu extends StatelessWidget{
       required this.weight,
       required this.quantity,
       required this.picture,
+      required this.additional_filling,
+      required this.filling,
     });
 
   @override
@@ -85,7 +91,7 @@ class BucketMenu extends StatelessWidget{
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(dish_name),
-                Text("${weight.toString()} г"),
+                Text("${filling}, ${additional_filling.join(", ")}"),
                 Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

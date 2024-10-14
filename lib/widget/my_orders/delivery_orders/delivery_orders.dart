@@ -17,6 +17,10 @@ class Deliv extends Orders{
     required List<CartItem> dishList
   }) : super(price: price, number: number, date: date, status: status, count_positions: count_positions, detailedStatus: detailedStatus, dishList: dishList);
 
+  List<CartItem> get DishList {
+    return dishList;
+  }
+
   @override
   State<Deliv> createState() => _DelivState();
   
@@ -164,7 +168,8 @@ class _DelivState extends State<Deliv> {
               child: Column(
                 children: [
                   OrderStatusWidget(currentStatus: widget.detailedStatus,),
-                  Container(child: DetailedStatusMap[widget.detailedStatus])
+                  // Container(child: DetailedStatusMap[widget.detailedStatus]),
+                  positionsInOrder(widget.dishList)
                 ],
               ),
             ),
@@ -174,6 +179,27 @@ class _DelivState extends State<Deliv> {
       ),
     );
   }
+
+  Widget positionsInOrder(List<CartItem> ListOfDishes) {
+  return Container(
+    height: 500,
+    child: ListView.builder(
+      itemCount: ListOfDishes.length,
+      itemBuilder: (context, index) {
+        final item = ListOfDishes[index];
+        return OrderDishes(
+          dish_name: item.dish_name,
+          price: item.price,
+          weight: item.weight,
+          quantity: item.quantity,
+          picture: item.picture,
+          additional_filling: item.additional_filling,
+          filling: item.filling,
+        );
+      },
+    ),
+  );
+}
 }
 
 class OrderStatusWidget extends StatelessWidget {
@@ -228,6 +254,51 @@ class OrderStatusWidget extends StatelessWidget {
         ),
         const SizedBox(height: 8),
       ],
+    );
+  }
+}
+
+class OrderDishes extends StatelessWidget{
+  final String dish_name;
+  final int price;
+  final int weight;
+  final int quantity;
+  final dynamic picture;
+  final List<String> additional_filling;
+  final String filling;
+
+  OrderDishes({
+      required this.dish_name,
+      required this.price,
+      required this.weight,
+      required this.quantity,
+      required this.picture,
+      required this.additional_filling,
+      required this.filling,
+    });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.amber,
+      child: Column(
+        children: [
+          Container(
+            height: 130,
+            color: Colors.green,
+          ),
+          Container(
+            padding: EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(dish_name),
+                Text("${filling}, ${additional_filling.join(", ")}"),
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }

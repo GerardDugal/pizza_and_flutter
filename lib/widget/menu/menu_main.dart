@@ -16,12 +16,14 @@ List<Widget> ListMenu = [
     price: 666,
     weight: 1050,
     picture: null,
+    with_fillings: true,
   ),
   Dishes(
     dish_name: "хер моржовый",
     price: 666,
     weight: 1050,
     picture: null,
+    with_fillings: true,
   )
 ];
 

@@ -117,7 +117,7 @@ class _CheckoutScreenDelivState extends State<CheckoutScreenDeliv> {
 
               // Блок "Время самовывоза"
               Text(
-                "Время самовывоза",
+                "Время доставки",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 10),

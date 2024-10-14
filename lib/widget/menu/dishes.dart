@@ -1,15 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:pizza_and_flutter/widget/menu/detailed_dish.dart';
 import 'package:provider/provider.dart';
 
-class CartItem{
+class CartItem {
   final String dish_name;
   final int price;
   final int weight;
   int quantity;
   final dynamic picture;
 
-  CartItem ({required this.dish_name, required this.price, required this.weight, this.quantity = 1, required this.picture});
+  CartItem({
+    required this.dish_name,
+    required this.price,
+    required this.weight,
+    this.quantity = 1,
+    required this.picture,
+    List<String>? filling,
+    List<String>? additional_filling, // Убираем значение по умолчанию
+  });// Инициализируем с помощью значения по умолчанию
 }
+
 
 class CartProvider with ChangeNotifier {
   final List<CartItem> _items = [];
@@ -80,12 +90,16 @@ class Dishes extends StatelessWidget {
   final int price;
   final int weight;
   final dynamic picture;
+  bool with_fillings;
 
   Dishes({
     required this.dish_name,
     required this.price,
     required this.weight,
     required this.picture,
+    this.with_fillings = false,
+    List<String>? filling ,
+    List<String>? additional_filling
   });
 
   @override
@@ -93,7 +107,7 @@ class Dishes extends StatelessWidget {
     // Получаем провайдер корзины
     final cart = Provider.of<CartProvider>(context);
     // Проверяем, есть ли этот товар в корзине
-    final index = cart.items.indexWhere((item) => item.dish_name == dish_name);
+    final index = cart.items.indexWhere((item, ) => item.dish_name == dish_name);
     final bool isInCart = index >= 0;
 
     return Container(
@@ -137,7 +151,18 @@ class Dishes extends StatelessWidget {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        cart.addItem(dish_name, price, weight, picture);
+                        with_fillings ?
+                        Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => 
+                        DishDetailScreen(dishName: dish_name,
+                        description: "Длиннное длинное описание",
+                        imageUrl: "https://i.pinimg.com/originals/63/a7/cf/63a7cf823cbc743612bc449a222fb46f.jpg",
+                        basePrice: price,
+                        weight: weight,
+                        fillings: [{"залупа" : 0}, {"хуй" : 0}, {"Говно" : 0}],
+                        additionalFillings: [{"Курица" : 70}, {"Говядина" : 50}, {"Свинина" : 110}],))
+                      ) : cart.addItem(dish_name, price, weight, picture);
                       },
                       child: Text("${price} р"),
                     ),

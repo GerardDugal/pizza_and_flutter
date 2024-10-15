@@ -93,7 +93,8 @@ class _CheckoutScreenDelivState extends State<CheckoutScreenDeliv> {
   // Содержимое после отправки заказа (галочка и сообщение)
   Widget _buildOrderSuccessContent() {
     return Container(
-      height: 250,
+      height: 800,
+      width: double.infinity,
       padding: EdgeInsets.all(16),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -250,11 +251,7 @@ class _CheckoutScreenDelivState extends State<CheckoutScreenDeliv> {
               SizedBox(height: 20),
 
               // Блок "Заказ"
-              Text(
-                "Заказ",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 10),
+              
               Container(
                 padding: EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -264,8 +261,14 @@ class _CheckoutScreenDelivState extends State<CheckoutScreenDeliv> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Text(
+                      "Заказ",
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 10),
                     Text("Сумма заказа: ${cart.totalAmount().toString()} р"),
-                    Text("Скидка: ${cart.discountPercent}% (${cart.calculatediscountInRublesTotal().toStringAsFixed(2)} р)"),
+                    Text("Скидка: ${cart.discountPercent}% ${cart.calculatediscountInRublesTotal().toStringAsFixed(2)} р", 
+                    style: TextStyle(color: Colors.red)),
                     SizedBox(height: 10),
                     Text(
                       "Всего к оплате: ${cart.calctotalToPay().toStringAsFixed(2)} р",
@@ -281,20 +284,35 @@ class _CheckoutScreenDelivState extends State<CheckoutScreenDeliv> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    final List <CartItem> ListOfDishes = List.from(cart.items);
-                    ListOfsDelivOrders.add(Deliv(number: 1,
-                    price: cart.calctotalToPay(),
-                    date: DateFormat('dd.MM.yyyy').format(DateTime.now()),
-                    status: Status.inprogress,
-                    count_positions: cart.positionsAmount,
-                    detailedStatus: DetailedStatus.adopted,
-                    dishList: ListOfDishes,));
+                    final List<CartItem> ListOfDishes = List.from(cart.items);
+                    ListOfsDelivOrders.add(Deliv(
+                      number: 1,
+                      price: cart.calctotalToPay(),
+                      date: DateFormat('dd.MM.yyyy').format(DateTime.now()),
+                      status: Status.inprogress,
+                      count_positions: cart.positionsAmount,
+                      detailedStatus: DetailedStatus.adopted,
+                      dishList: ListOfDishes,
+                    ));
                     print("Оформить заказ");
                     print(ListOfsDelivOrders);
                     cart.clearCart();
                     _showPaymentOptions(context);
                   },
-                  child: Text("Оформить заказ"),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,// Белый цвет текста
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8), // Небольшое закругление
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min, // Уменьшение размера строки до минимального
+                    children: [
+                      Icon(Icons.shopping_cart, color: Colors.white), // Иконка корзины
+                      SizedBox(width: 8), // Отступ между иконкой и текстом
+                      Text("Оформить заказ", style: TextStyle(color: Colors.white),), // Текст кнопки
+                    ],
+                  ),
                 ),
               ),
             ],

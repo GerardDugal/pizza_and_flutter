@@ -3,6 +3,27 @@ import 'package:ionicons/ionicons.dart';
 import 'package:pizza_and_flutter/widget/menu/dishes.dart';
 import 'package:pizza_and_flutter/widget/my_orders/orders.dart';
 
+abstract class Orders extends StatefulWidget {
+  final double price;
+  final int number;
+  final String date;
+  final Status status;
+  final int count_positions;
+  final DetailedStatus detailedStatus;
+  final List<CartItem> dishList;
+
+  Orders({ 
+    required this.price,
+    required this.number,
+    required this.date,
+    required this.status,
+    required this.count_positions,
+    required this.detailedStatus,
+    required this.dishList,
+  });
+
+}
+
 class PickUp extends Orders{
 
   final String pickup_adress;

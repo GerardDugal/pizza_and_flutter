@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 class DishDetailScreen extends StatefulWidget {
   final String dishName;
   final String description;
-  final String imageUrl;
+  final Image image;
   final int basePrice;
   final int weight;
   final List<Map<String, int>> fillings; // Наполнения с ценой
@@ -14,7 +14,7 @@ class DishDetailScreen extends StatefulWidget {
   DishDetailScreen({
     required this.dishName,
     required this.description,
-    required this.imageUrl,
+    required this.image,
     required this.basePrice,
     required this.weight,
     required this.fillings,
@@ -47,30 +47,46 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    if (widget.fillings.isNotEmpty) {
+      selectedFilling = widget.fillings.first.keys.first;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final cart = Provider.of<CartProvider>(context);
     
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.dishName),
-      ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Картинка блюда
-            Container(
-              height: 200,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: NetworkImage(widget.imageUrl),
-                  fit: BoxFit.cover,
+            Stack(
+              children: [
+                // Ваше изображение
+                widget.image,
+            
+                // Кнопка возврата
+                Positioned(
+                  top: 50.0, // Отступ сверху
+                  left: 16.0, // Отступ слева
+                  child: IconButton(
+                    icon: Icon(Icons.arrow_back, color: const Color.fromARGB(255, 0, 0, 0)), // Иконка назад
+                    onPressed: () {
+                      Navigator.pop(context); // Возвращает на предыдущий экран
+                    },
+                    // Оформление кнопки
+                    style: ElevatedButton.styleFrom(
+                      shape: CircleBorder(),
+                      backgroundColor: Colors.white, // Белый фон кнопки
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
             SizedBox(height: 20),
-
             // Название блюда
             Padding(
               padding: const EdgeInsets.all(16.0),
@@ -79,7 +95,6 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
             ),
-
             // Описание
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -89,7 +104,6 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
               ),
             ),
             SizedBox(height: 20),
-
             // Дополнительные начинки
             Padding(
               padding: const EdgeInsets.all(16.0),
@@ -151,53 +165,121 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
 
       // Bottom App Bar
       bottomNavigationBar: BottomAppBar(
+        height: 170,
         child: Container(
           padding: const EdgeInsets.all(16.0),
-          height: 90,
-          child: Row(
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // Количество товара
+              // Первая строка: Название, вес, цена
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  IconButton(
-                    onPressed: () {
-                      setState(() {
-                        if (quantity > 1) {
-                          quantity--;
-                        }
-                      });
-                    },
-                    icon: Icon(Icons.remove),
+                  SizedBox(
+                    width: 170,
+                    child: Text(
+                      overflow: TextOverflow.ellipsis,
+                      widget.dishName,
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold
+                      ),
+                    ),
                   ),
-                  Text(quantity.toString(), style: TextStyle(fontSize: 20)),
-                  IconButton(
-                    onPressed: () {
-                      setState(() {
-                        quantity++;
-                      });
-                    },
-                    icon: Icon(Icons.add),
+                  Text(
+                    "${widget.weight} г",
+                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                  ),
+                  SizedBox(width: 50),
+                  Text(
+                    "${calculateTotalPrice()} р",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
-
-              // Стоимость и вес
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+              // Вторая строка: Выбранные дополнения
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Text("${widget.weight} г", style: TextStyle(fontSize: 16)),
-                  Text("${calculateTotalPrice()} р", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  Text(
+                    "${selectedFilling} ${selectedAdditionalFillings.join(", ")}",
+                    style: TextStyle(fontSize: 13, color: Colors.grey),
+                  ),
                 ],
               ),
-
-              // Кнопка "Добавить"
-              ElevatedButton(
-                onPressed: () {
-                  cart.addItem(widget.dishName, calculateTotalPrice(), widget.weight, widget.imageUrl, selectedFilling!, selectedAdditionalFillings);
-                  Navigator.pop(context);
-                },
-                child: Text("Добавить"),
+              SizedBox(height: 10),
+              // Третья строка: Количество и кнопка "Добавить"
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Количество товара (+ и - кнопки)
+                  Row(
+                    children: [
+                      IconButton(
+                        onPressed: quantity > 1
+                            ? () {
+                                cart.minusItem(widget.dishName);
+                                setState(() {
+                                  quantity--;
+                                });
+                              }
+                            : null,
+                        icon: Icon(
+                          Icons.remove,
+                          color: quantity > 1 ? Colors.black : Colors.grey,
+                        ),
+                      ),
+                      Text(quantity.toString(), style: TextStyle(fontSize: 20)),
+                      IconButton(
+                        onPressed: quantity == 1 ? () {
+                          cart.addItem(
+                        widget.dishName,
+                        calculateTotalPrice(),
+                        widget.weight,
+                        widget.image,
+                        widget.description,
+                        selectedFilling!,
+                        selectedAdditionalFillings,
+                      );
+                          setState(() {
+                            quantity++;
+                          });
+                        } : 
+                        () {
+                          cart.plusItem(widget.dishName);
+                          setState(() {
+                            quantity++;
+                          });
+                        },
+                        icon: Icon(Icons.add),
+                      ),
+                    ],
+                  ),
+                  // Кнопка "Добавить"
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8), // Более квадратная форма
+                      ),
+                    ),
+                    onPressed: () {
+                      cart.addItem(
+                        widget.dishName,
+                        calculateTotalPrice(),
+                        widget.weight,
+                        widget.image,
+                        widget.description,
+                        selectedFilling!,
+                        selectedAdditionalFillings,
+                      );
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      "Добавить",
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

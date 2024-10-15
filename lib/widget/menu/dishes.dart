@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:pizza_and_flutter/widget/menu/detailed_dish.dart';
 import 'package:provider/provider.dart';
@@ -7,7 +9,8 @@ class CartItem {
   final int price;
   final int weight;
   int quantity;
-  final dynamic picture;
+  String description;
+  final Image picture;
   final List<String> additional_filling;
   final String filling;
 
@@ -16,6 +19,7 @@ class CartItem {
     required this.price,
     required this.weight,
     this.quantity = 1,
+    required this.description,
     required this.picture,
     required this.filling,
     required this.additional_filling, // Убираем значение по умолчанию
@@ -31,13 +35,13 @@ class CartProvider with ChangeNotifier {
 
   List<CartItem> get items => _items;
 
-  void addItem(String name, int price, int weight, dynamic picture, final String filling, final List<String> adding) {
+  void addItem(String name, int price, int weight, dynamic picture, String description, String filling, List<String> adding) {
     // Проверка, есть ли уже такой товар в корзине
     final index = _items.indexWhere((item) => item.dish_name == name);
     if (index >= 0) {
       _items[index].quantity += 1;
     } else {
-      _items.add(CartItem(dish_name: name, price: price, weight: weight, picture: picture, filling: filling, additional_filling: adding));
+      _items.add(CartItem(dish_name: name, price: price, weight: weight, description: description, picture: picture, filling: filling, additional_filling: adding));
     }
     notifyListeners();  // Обновляем UI
   }
@@ -92,6 +96,7 @@ class Dishes extends StatelessWidget {
   final int price;
   final int weight;
   final dynamic picture;
+  final String description;
   bool with_fillings;
   final List<Map<String, int>> additional_filling;
   final List<Map<String, int>> filling;
@@ -101,6 +106,7 @@ class Dishes extends StatelessWidget {
     required this.price,
     required this.weight,
     required this.picture,
+    required this.description,
     this.with_fillings = false,
     required this.filling ,
     required this.additional_filling
@@ -115,62 +121,106 @@ class Dishes extends StatelessWidget {
     final bool isInCart = index >= 0;
 
     return Container(
-      color: Colors.amber,
+      decoration: BoxDecoration(
+        color: Colors.white, // Цвет контейнера
+        borderRadius: BorderRadius.circular(10), // Закругление углов на 10
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2), // Цвет тени с прозрачностью
+            offset: Offset(0, 4), // Смещение тени по горизонтали и вертикали
+            blurRadius: 10, // Радиус размытия тени
+          ),
+        ],
+      ),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Container(
-            height: 130,
-            color: Colors.green,
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10), // Закругление углов на 10
+            child: picture // Масштабирование изображения
           ),
           Container(
-            padding: EdgeInsets.all(10),
+            height: 120,
+            padding: EdgeInsets.fromLTRB(10, 5, 10, 0),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(dish_name),
                 Text("${weight.toString()} г"),
-                SizedBox(height: 10),
+                // SizedBox(height: 20),
                 if (isInCart)
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       ElevatedButton(
-                        onPressed: () {
-                          cart.minusItem(dish_name);
-                        },
-                        child: Text("-"),
+                      onPressed: () {
+                        cart.minusItem(dish_name);
+                      },
+                      child: Text(
+                        "-",
+                        style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w900), // Белый текст
                       ),
-                      Text("${cart.items[index].quantity}"), // Количество товара
-                      ElevatedButton(
-                        onPressed: () {
-                          cart.plusItem(dish_name);
-                        },
-                        child: Text("+"),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red, // Красный фон кнопки
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8), // Небольшое закругление
+                        ),
                       ),
+                    ),
+                    Text("${cart.items[index].quantity}", style: TextStyle(fontSize: 20),), // Количество товара
+                    ElevatedButton(
+                      onPressed: () {
+                        cart.plusItem(dish_name);
+                      },
+                      child: Text(
+                        "+",
+                        style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w900), // Белый текст
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red, // Красный фон кнопки
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8), // Небольшое закругление
+                        ),
+                      ),
+                    ),
                     ],
                   )
                 else
                   // Если товара нет в корзине, показываем кнопку с ценой
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        with_fillings ?
-                        Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => 
-                        DishDetailScreen(dishName: dish_name,
-                        description: "Длиннное длинное описание",
-                        imageUrl: "https://i.pinimg.com/originals/63/a7/cf/63a7cf823cbc743612bc449a222fb46f.jpg",
-                        basePrice: price,
-                        weight: weight,
-                        fillings: filling,
-                        additionalFillings: additional_filling,))
-                      ) : cart.addItem(dish_name, price, weight, picture, "", []);
-                      },
-                      child: Text("${price} р"),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      with_fillings
+                          ? Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DishDetailScreen(
+                                  dishName: dish_name,
+                                  description: description,
+                                  image: picture,
+                                  basePrice: price,
+                                  weight: weight,
+                                  fillings: filling,
+                                  additionalFillings: additional_filling,
+                                ),
+                              ),
+                            )
+                          : cart.addItem(dish_name, price, weight, picture, description, "", []);
+                    },
+                    child: Text(
+                      "${price} р",
+                      style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.w700, fontFamily: "Inter"), // Цвет текста
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red, // Красный фон кнопки
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8), // Небольшое закругление
+                      ),
                     ),
                   ),
+                ),
               ],
             ),
           ),

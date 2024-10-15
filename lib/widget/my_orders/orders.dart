@@ -25,40 +25,40 @@ Map<DetailedStatus, Widget> DetailedStatusMap = {
   DetailedStatus.adopted : Center(
     child: Column(
       children: [
-        Text("Принят"),
-        Text("Отдаём в работу.")
+        Text("Принят.", style: TextStyle(fontFamily: "Inter", fontSize: 26, fontWeight: FontWeight.w700),),
+        Text("Отдаём в работу.", style: TextStyle(fontFamily: "Inter", fontSize: 18, fontWeight: FontWeight.w700),)
       ],
     ),
   ),
   DetailedStatus.putToWork : Center(
     child: Column(
       children: [
-        Text("Отдан в работу"),
-        Text("Быстро и только для вас.")
+        Text("Отдан в работу.", style: TextStyle(fontFamily: "Inter", fontSize: 26, fontWeight: FontWeight.w700),),
+        Text("Быстро и только для вас.", style: TextStyle(fontFamily: "Inter", fontSize: 18, fontWeight: FontWeight.w700),)
       ],
     ),
   ),
   DetailedStatus.toCourier : Center(
     child: Column(
       children: [
-        Text("Передан курьеру."),
-        Text("Скоро будет у вас.")
+        Text("Передан курьеру.", style: TextStyle(fontFamily: "Inter", fontSize: 26, fontWeight: FontWeight.w700),),
+        Text("Скоро будет у вас.", style: TextStyle(fontFamily: "Inter", fontSize: 18, fontWeight: FontWeight.w700),)
       ],
     ),
   ),
   DetailedStatus.delivered : Center(
     child: Column(
       children: [
-        Text("Доставлен."),
-        Text("Приятного аппетита!")
+        Text("Доставлен.", style: TextStyle(fontFamily: "Inter", fontSize: 26, fontWeight: FontWeight.w700),),
+        Text("Приятного аппетита!", style: TextStyle(fontFamily: "Inter", fontSize: 18, fontWeight: FontWeight.w700),)
       ],
     ),
   ),
   DetailedStatus.readyToGet : Center(
     child: Column(
       children: [
-        Text("Готов к выдачи."),
-        Text("Скоро будет у вас.")
+        Text("Готов к выдачи.", style: TextStyle(fontFamily: "Inter", fontSize: 26, fontWeight: FontWeight.w700),),
+        Text("Скоро будет у вас.", style: TextStyle(fontFamily: "Inter", fontSize: 18, fontWeight: FontWeight.w700),)
       ],
     ),
   ),
@@ -71,23 +71,3 @@ Map<Status, String> StatusMap =  {
   Status.uncompleted : "НЕ ВЫПОЛНЕН"
 };
 
-abstract class Orders extends StatefulWidget {
-  final double price;
-  final int number;
-  final String date;
-  final Status status;
-  final int count_positions;
-  final DetailedStatus detailedStatus;
-  final List<CartItem> dishList;
-
-  Orders({ 
-    required this.price,
-    required this.number,
-    required this.date,
-    required this.status,
-    required this.count_positions,
-    required this.detailedStatus,
-    required this.dishList,
-  });
-
-}

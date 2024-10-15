@@ -5,17 +5,24 @@ import 'package:pizza_and_flutter/widget/my_orders/delivery_orders/delivery_orde
 import 'package:pizza_and_flutter/widget/my_orders/orders.dart';
 
 
-class Deliv extends Orders{
-  
+class Deliv extends StatefulWidget{
+  final double price;
+  final int number;
+  final String date;
+  final Status status;
+  final int count_positions;
+  final DetailedStatus detailedStatus;
+  final List<CartItem> dishList;
+
   Deliv({
-    required double price,
-    required int number,
-    required String date,
-    required Status status,
-    required int count_positions,
-    required DetailedStatus detailedStatus,
-    required List<CartItem> dishList
-  }) : super(price: price, number: number, date: date, status: status, count_positions: count_positions, detailedStatus: detailedStatus, dishList: dishList);
+    required this.price,
+    required this.number,
+    required this.date,
+    required this.status,
+    required this.count_positions,
+    required this.detailedStatus,
+    required this.dishList
+  });
 
   List<CartItem> get DishList {
     return dishList;
@@ -23,7 +30,6 @@ class Deliv extends Orders{
 
   @override
   State<Deliv> createState() => _DelivState();
-  
 }
 
 class _DelivState extends State<Deliv> {
@@ -162,143 +168,23 @@ class _DelivState extends State<Deliv> {
       body: Column(
         children: [
           Container(
-            padding: EdgeInsets.fromLTRB(0, 30, 0, 50),
-            color: const Color.fromARGB(255, 241, 241, 241),
+            padding: EdgeInsets.fromLTRB(0, 0, 0, 50),
             child: Center(
               child: Column(
                 children: [
-                  OrderStatusWidget(currentStatus: widget.detailedStatus,),
+                  Container(
+                    color: const Color.fromARGB(255, 243, 243, 243),
+                    padding: EdgeInsets.fromLTRB(0, 30, 0, 50),
+                    child: OrderStatusWidget(currentStatus: widget.detailedStatus,)),
                   // Container(child: DetailedStatusMap[widget.detailedStatus]),
-                  positionsInOrder(widget.dishList)
+                  PositionsInOrder(ListOfDishes: widget.dishList)
                 ],
               ),
             ),
           ),
-          Container(color: Colors.green,)
-        ],
-      ),
-    );
-  }
-
-  Widget positionsInOrder(List<CartItem> ListOfDishes) {
-  return Container(
-    height: 500,
-    child: ListView.builder(
-      itemCount: ListOfDishes.length,
-      itemBuilder: (context, index) {
-        final item = ListOfDishes[index];
-        return OrderDishes(
-          dish_name: item.dish_name,
-          price: item.price,
-          weight: item.weight,
-          quantity: item.quantity,
-          picture: item.picture,
-          additional_filling: item.additional_filling,
-          filling: item.filling,
-        );
-      },
-    ),
-  );
-}
-}
-
-class OrderStatusWidget extends StatelessWidget {
-  final DetailedStatus currentStatus;
-
-  const OrderStatusWidget({Key? key, required this.currentStatus}) : super(key: key);
-
-  Color _getStatusColor(DetailedStatus status) {
-    return currentStatus == status ? Colors.red : Colors.grey;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _buildStatusIcon(
-            icon: Icons.check,
-            status: DetailedStatus.adopted,
-          ),
-          Container(padding: EdgeInsets.fromLTRB(12, 0, 12, 6), child: Icon(Icons.arrow_forward, size: 16, color: Colors.grey[600],)),
-          _buildStatusIcon(
-            icon: Icons.access_time,
-            status: DetailedStatus.putToWork,
-          ),
-          Container(padding: EdgeInsets.fromLTRB(12, 0, 12, 6), child: Icon(Icons.arrow_forward, size: 16, color: Colors.grey[600],)),
-          _buildStatusIcon(
-            icon: Icons.person,
-            status: DetailedStatus.toCourier,
-          ),
-          Container(padding: EdgeInsets.fromLTRB(12, 0, 12, 6), child: Icon(Icons.arrow_forward, size: 16, color: Colors.grey[600],)),
-          _buildStatusIcon(
-            icon: Icons.emoji_emotions,
-            status: DetailedStatus.delivered,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStatusIcon({required IconData icon, required DetailedStatus status}) {
-    return Column(
-      children: [
-        CircleAvatar(
-          radius: 15,
-          backgroundColor: _getStatusColor(status),
-          child: Icon(
-            icon,
-            color: Colors.white,
-          ),
-        ),
-        const SizedBox(height: 8),
-      ],
-    );
-  }
-}
-
-class OrderDishes extends StatelessWidget{
-  final String dish_name;
-  final int price;
-  final int weight;
-  final int quantity;
-  final dynamic picture;
-  final List<String> additional_filling;
-  final String filling;
-
-  OrderDishes({
-      required this.dish_name,
-      required this.price,
-      required this.weight,
-      required this.quantity,
-      required this.picture,
-      required this.additional_filling,
-      required this.filling,
-    });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.amber,
-      child: Column(
-        children: [
-          Container(
-            height: 130,
-            color: Colors.green,
-          ),
-          Container(
-            padding: EdgeInsets.all(10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(dish_name),
-                Text("${filling}, ${additional_filling.join(", ")}"),
-              ],
-            ),
-          )
         ],
       ),
     );
   }
 }
+

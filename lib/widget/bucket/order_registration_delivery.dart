@@ -54,7 +54,7 @@ class _CheckoutScreenDelivState extends State<CheckoutScreenDeliv> {
   // Содержимое панели с вариантами оплаты
   Widget _buildPaymentOptionsContent(StateSetter modalSetState) {
     return Container(
-      height: 250,
+      height: 200,
       padding: EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,7 +68,7 @@ class _CheckoutScreenDelivState extends State<CheckoutScreenDeliv> {
               groupValue: 'payment',
               onChanged: (value) {
                 modalSetState(() {
-                  _completeOrder(modalSetState);
+                  _completeOrder(modalSetState); // Завершаем заказ при выборе оплаты картой
                 });
               },
             ),
@@ -80,7 +80,7 @@ class _CheckoutScreenDelivState extends State<CheckoutScreenDeliv> {
               groupValue: 'payment',
               onChanged: (value) {
                 modalSetState(() {
-                  _completeOrder(modalSetState);
+                  _completeOrder(modalSetState); // Завершаем заказ при выборе оплаты наличными
                 });
               },
             ),
@@ -99,7 +99,7 @@ class _CheckoutScreenDelivState extends State<CheckoutScreenDeliv> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.check_circle, color: Colors.green, size: 100),
+          Icon(Icons.check_circle, color: Colors.red, size: 100),
           SizedBox(height: 20),
           Text("Ваш заказ отправлен на оформление", style: TextStyle(fontSize: 18)),
         ],
@@ -109,10 +109,27 @@ class _CheckoutScreenDelivState extends State<CheckoutScreenDeliv> {
 
   // Завершение заказа и обновление состояния
   void _completeOrder(StateSetter modalSetState) {
+    final cart = Provider.of<CartProvider>(context, listen: false);
+
     // Обновляем состояние для отображения успеха
     setState(() {
       _orderSubmitted = true;
     });
+
+    // Добавляем заказ в список заказов только после успешной оплаты
+    final List<CartItem> ListOfDishes = List.from(cart.items);
+    ListOfsDelivOrders.add(Deliv(
+      number: 1,
+      price: cart.calctotalToPay(),
+      date: DateFormat('dd.MM.yyyy').format(DateTime.now()),
+      status: Status.inprogress,
+      count_positions: cart.positionsAmount,
+      detailedStatus: DetailedStatus.adopted,
+      dishList: ListOfDishes,
+    ));
+
+    // Очищаем корзину после успешного добавления заказа
+    cart.clearCart();
 
     // Даем небольшую задержку перед закрытием модального окна
     Future.delayed(Duration(seconds: 2), () {
@@ -251,7 +268,6 @@ class _CheckoutScreenDelivState extends State<CheckoutScreenDeliv> {
               SizedBox(height: 20),
 
               // Блок "Заказ"
-              
               Container(
                 padding: EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -272,47 +288,36 @@ class _CheckoutScreenDelivState extends State<CheckoutScreenDeliv> {
                     SizedBox(height: 10),
                     Text(
                       "Всего к оплате: ${cart.calctotalToPay().toStringAsFixed(2)} р",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 20),
+                    // Кнопка "Оформить заказ"
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          _showPaymentOptions(context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.shopping_cart, color: Colors.white),
+                            SizedBox(width: 8),
+                            Text(
+                              "Оформить заказ",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
-                ),
-              ),
-              SizedBox(height: 20),
-
-              // Кнопка "Оформить заказ"
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    final List<CartItem> ListOfDishes = List.from(cart.items);
-                    ListOfsDelivOrders.add(Deliv(
-                      number: 1,
-                      price: cart.calctotalToPay(),
-                      date: DateFormat('dd.MM.yyyy').format(DateTime.now()),
-                      status: Status.inprogress,
-                      count_positions: cart.positionsAmount,
-                      detailedStatus: DetailedStatus.adopted,
-                      dishList: ListOfDishes,
-                    ));
-                    print("Оформить заказ");
-                    print(ListOfsDelivOrders);
-                    cart.clearCart();
-                    _showPaymentOptions(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,// Белый цвет текста
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8), // Небольшое закругление
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min, // Уменьшение размера строки до минимального
-                    children: [
-                      Icon(Icons.shopping_cart, color: Colors.white), // Иконка корзины
-                      SizedBox(width: 8), // Отступ между иконкой и текстом
-                      Text("Оформить заказ", style: TextStyle(color: Colors.white),), // Текст кнопки
-                    ],
-                  ),
                 ),
               ),
             ],
@@ -322,4 +327,3 @@ class _CheckoutScreenDelivState extends State<CheckoutScreenDeliv> {
     );
   }
 }
-

@@ -1,8 +1,22 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:pizza_and_flutter/widget/menu/detailed_dish.dart';
 import 'package:provider/provider.dart';
+
+
+// {
+//                 "id": "931271",
+//                 "address_id": 0,
+//                 "menu_cat_id": 10666,
+//                 "menu_type_id": 112995,
+//                 "title": "Coca cola",
+//                 "descr": "",
+//                 "kcal": "",
+//                 "divider": false,
+//                 "weight": "330",
+//                 "image_url": "http://appframe.inforino.ru/catalog/uploads/file/217c/c218/89f5/2437/e03b4be31eba9d8f5eb9df706fe1bbfe70b5244f9a7c054b.jpg",
+//                 "deleted": false,
+//                 "field_order": 0
+//             },
 
 class CartItem {
   final String dish_name;
@@ -193,7 +207,7 @@ class Dishes extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () {
                       with_fillings
-                          ? Navigator.push(
+                           ? Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => DishDetailScreen(
@@ -207,7 +221,7 @@ class Dishes extends StatelessWidget {
                                 ),
                               ),
                             )
-                          : cart.addItem(dish_name, price, weight, picture, description, "", []);
+                         : cart.addItem(dish_name, price, weight, picture, description, "", []);
                     },
                     child: Text(
                       "${price} р",

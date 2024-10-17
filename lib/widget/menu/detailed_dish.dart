@@ -118,6 +118,13 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
                 String fillingName = filling.keys.first;
                 int price = filling.values.first;
                 return RadioListTile<String>(
+                   fillColor: WidgetStateProperty.resolveWith((states) {
+                    if (!states.contains(WidgetState.selected)) {
+                      return Colors.grey;
+                    }
+                    return null;
+                  }),
+                  activeColor: Colors.red,
                   title: Text("$fillingName (+$price р)"),
                   value: fillingName,
                   groupValue: selectedFilling,
@@ -145,8 +152,10 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
                 String fillingName = additional.keys.first;
                 int price = additional.values.first;
                 return CheckboxListTile(
-                  title: Text("$fillingName (+$price р)"),
+                  controlAffinity: ListTileControlAffinity.leading,
+                  activeColor: Colors.red,
                   value: selectedAdditionalFillings.contains(fillingName),
+                  title: Text("$fillingName (+$price р)"),
                   onChanged: (bool? selected) {
                     setState(() {
                       if (selected == true) {

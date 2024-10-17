@@ -21,7 +21,10 @@ class MyOrders extends StatelessWidget {
   Widget build(BuildContext context) {
     List <Widget> ListOfOrders = ListOfsDelivOrders + ListOfPickUpOrders;
     return Scaffold(
-      appBar: AppBar(title: Center(child: Text("Мои заказы")),),
+      appBar: AppBar(
+        title: const Text("Мои заказы"),
+        centerTitle: true, // Это выравнивает заголовок по центру
+      ),
       body: ListView(
       children: ListOfOrders
         )

@@ -4,7 +4,6 @@ import 'package:pizza_and_flutter/widget/menu/dishes.dart';
 import 'package:pizza_and_flutter/widget/menu/menu_main.dart';
 import 'package:pizza_and_flutter/widget/my_orders/my_orders_main.dart';
 
-
 class StartScreen extends StatefulWidget {
   const StartScreen({super.key});
 
@@ -13,13 +12,13 @@ class StartScreen extends StatefulWidget {
 }
 
 class _StartScreenState extends State<StartScreen> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        margin: EdgeInsets.fromLTRB(20, 60, 20, 30),
-        child: Column(
+      body: SingleChildScrollView( // Оборачиваем в SingleChildScrollView
+        child: Container(
+          margin: EdgeInsets.fromLTRB(20, 60, 20, 30),
+          child: Column(
             children: [
               AboutUs(),
               Padding(
@@ -27,18 +26,20 @@ class _StartScreenState extends State<StartScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                  Panel(name: "Мои заказы", color: Colors.red, TextColor: Colors.white, icon: Ionicons.receipt_outline),
-                  Panel(name: "Рестораны", color: Colors.black, TextColor: Colors.white, icon: Ionicons.location_outline)
-                ],),
+                    Panel(name: "Мои заказы", color: Colors.red, TextColor: Colors.white, icon: Ionicons.receipt_outline),
+                    Panel(name: "Рестораны", color: Colors.black, TextColor: Colors.white, icon: Ionicons.location_outline)
+                  ],
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 15),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                  Panel(name: "Доставка", color: Colors.black, TextColor: Colors.white, icon: Ionicons.home_outline),
-                  Panel(name: "Самовывоз", color: Colors.red, TextColor: Colors.white, icon: Ionicons.car_sport_outline)
-                ],),
+                    Panel(name: "Доставка", color: Colors.black, TextColor: Colors.white, icon: Ionicons.home_outline),
+                    Panel(name: "Самовывоз", color: Colors.red, TextColor: Colors.white, icon: Ionicons.car_sport_outline)
+                  ],
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 15),
@@ -49,10 +50,10 @@ class _StartScreenState extends State<StartScreen> {
                   ],
                 ),
               ),
-              
-            ]
+            ],
           ),
-      )
+        ),
+      ),
     );
   }
 }
@@ -64,16 +65,22 @@ class AboutUs extends StatelessWidget {
   Widget build(BuildContext context) {
     final image = AssetImage('images/pizza_main.png');
     return Center(
-        child: Stack(
-          alignment: Alignment.bottomLeft,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Image(image: image,),
+      child: Stack(
+        alignment: Alignment.bottomLeft,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Image(image: image),
+          ),
+          Container(
+            margin: EdgeInsets.only(left: 15),
+            child: Text(
+              "О нас",
+              style: TextStyle(color: Colors.white, fontSize: 60, fontWeight: FontWeight.w700),
             ),
-            Container(margin: EdgeInsets.only(left: 15), child: Text("О нас", style: TextStyle(color: Colors.white, fontSize: 60, fontWeight: FontWeight.w700),))
-          ],
-        ),
+          )
+        ],
+      ),
     );
   }
 }
@@ -93,59 +100,57 @@ class Panel extends StatefulWidget {
 int _counter = 0;
 
 class _PanelsState extends State<Panel> {
-
   @override
   Widget build(BuildContext context) {
-    double ScreenWidth = MediaQuery.sizeOf(context).width;
+    double screenWidth = MediaQuery.of(context).size.width;
 
     return Center(
       child: InkWell(
-      child: Container(
-        decoration: BoxDecoration(
-              boxShadow: [BoxShadow(color: Colors.grey, blurRadius: 5, blurStyle: BlurStyle.outer)],
-              color: widget.color,
-              borderRadius: BorderRadius.circular(10)
+        child: Container(
+          decoration: BoxDecoration(
+            boxShadow: [BoxShadow(color: Colors.grey, blurRadius: 5, blurStyle: BlurStyle.outer)],
+            color: widget.color,
+            borderRadius: BorderRadius.circular(10),
           ),
-        width: (ScreenWidth - 70) / 2,
-        height: (ScreenWidth - 70) / 2,
+          width: (screenWidth - 70) / 2,
+          height: (screenWidth - 70) / 2,
           child: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20)
-          ),
+              borderRadius: BorderRadius.circular(20),
+            ),
             margin: EdgeInsets.fromLTRB(12, 20, 12, 3),
             child: Column(
               children: [
-                Icon(widget.icon, color: widget.TextColor, size: 90,),
-                Divider(color: widget.TextColor, thickness: 0.4,),
+                Icon(widget.icon, color: widget.TextColor, size: 90),
+                Divider(color: widget.TextColor, thickness: 0.4),
                 Text(
-                  "${widget.name}",
+                  widget.name,
                   style: TextStyle(
                     color: widget.TextColor,
                     fontFamily: "Inter",
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),
-                  ),
+                ),
               ],
             ),
           ),
-          ),
-          onTap: () {
-            print("Tap");
-            if (widget.name == "Мои заказы"){
+        ),
+        onTap: () {
+          if (widget.name == "Мои заказы") {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => const MyOrders()),
-            );}
-            if (widget.name == "Доставка"){
+            );
+          }
+          if (widget.name == "Доставка") {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => Menu()),
             );
-            }
+          }
         },
       ),
-    ); 
+    );
   }
 }
-

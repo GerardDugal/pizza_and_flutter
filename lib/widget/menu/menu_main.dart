@@ -4,36 +4,6 @@ import 'package:pizza_and_flutter/widget/menu/dishes.dart';
 import 'package:pizza_and_flutter/widget/menu/menu.dart';
 import 'package:pizza_and_flutter/widget/start_screen.dart';
 
-// List<Widget> ListMenu = [
-//   Dishes(
-//     dish_name: "Ебанина с рисом или хуй его знает",
-//     price: 666,
-//     weight: 1050,
-//     picture: Image.asset('images/pizza_menu.png'),
-//     filling: const [],
-//     additional_filling: [],
-//   ),
-//   Dishes(
-//     dish_name: "вяленная конская залупа",
-//     price: 666,
-//     weight: 1050,
-//     picture: Image.asset('images/pizza_menu.png'),
-//     with_fillings: true,
-//     filling: const [{"залупа" : 0}, {"хуй" : 0}, {"Говно" : 0}],
-//     additional_filling: [{"Курица" : 70}, {"Говядина" : 50}, {"Свинина" : 110}],
-//   ),
-//   Dishes(
-//     dish_name: "хер моржовый",
-//     price: 666,
-//     weight: 1050,
-//     picture: Image.asset('images/pizza_menu.png'),
-//     with_fillings: true,
-//     filling: const [{"залупа" : 0}, {"хуй" : 0}, {"Говно" : 0}],
-//     additional_filling: [{"Курица" : 70}, {"Говядина" : 50}, {"Свинина" : 110}],
-//   )
-// ];
-
-
 class Menu extends StatefulWidget {
   @override
   _MenuState createState() => _MenuState();
@@ -41,7 +11,62 @@ class Menu extends StatefulWidget {
 
 class _MenuState extends State<Menu> {
   int _selectedIndex = 1;
-  int _selectedCategoryIndex = 0;
+  int _highlightedCategoryIndex = 0;
+  ScrollController _scrollController = ScrollController();
+  Map<String, GlobalKey> _categoryKeys = {};
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Инициализация ключей для каждой категории
+    for (var category in categorizedMenu) {
+      _categoryKeys[category['category']] = GlobalKey();
+    }
+
+    // Добавляем слушатель для скролла
+    _scrollController.addListener(_onScroll);
+  }
+
+  // Метод для обновления активной категории при скролле
+  void _onScroll() {
+  final screenHeight = MediaQuery.of(context).size.height;
+  final scrollOffset = _scrollController.offset;
+
+  for (int i = 0; i < categorizedMenu.length; i++) {
+    final key = _categoryKeys[categorizedMenu[i]['category']];
+    if (key != null) {
+      final context = key.currentContext;
+      if (context != null) {
+        final box = context.findRenderObject() as RenderBox;
+
+        // Получаем положение категории
+        final categoryOffset = box.localToGlobal(Offset.zero).dy;
+
+        // Проверка, находится ли категория в пределах видимости экрана
+        if (categoryOffset >= scrollOffset && categoryOffset < scrollOffset + screenHeight - AppBar().preferredSize.height - 65) {
+          setState(() {
+            _highlightedCategoryIndex = i;
+          });
+          break; // Выход из цикла, когда найдена первая видимая категория
+        }
+      }
+    }
+  }
+}
+
+
+  // Метод для плавного скролла к нужной категории
+  void _scrollToCategory(String category) {
+    final key = _categoryKeys[category];
+    if (key != null) {
+      Scrollable.ensureVisible(
+        key.currentContext!,
+        duration: Duration(milliseconds: 300),
+        alignment: 0.1,
+      );
+    }
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -77,83 +102,95 @@ class _MenuState extends State<Menu> {
         backgroundColor: const Color.fromARGB(255, 240, 240, 240),
       ),
       body: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-              ),
-          child: Column(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-          // Горизонтальный скролл для категорий
-          Container(
-            height: 65,
-            padding: EdgeInsets.only(top: 20),
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: categorizedMenu.length,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _selectedCategoryIndex = index;
-                    });
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                    margin: EdgeInsets.symmetric(horizontal: 10),
-                    decoration: BoxDecoration(
-                      color: _selectedCategoryIndex == index
-                          ? Colors.red
-                          : Colors.white,
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: Center(
-                      child: Text(
-                        categorizedMenu[index]['category'],
-                        style: TextStyle(
-                          color: _selectedCategoryIndex == index
-                              ? Colors.white
-                              : Colors.black,
-                          fontSize: 17
+            // Горизонтальный список категорий
+            Container(
+              height: 65,
+              padding: EdgeInsets.only(top: 10, bottom: 10),
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: categorizedMenu.length,
+                itemBuilder: (context, index) {
+                  final isHighlighted = _highlightedCategoryIndex == index;
+                  return GestureDetector(
+                    onTap: () {
+                      _scrollToCategory(categorizedMenu[index]['category']);
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                      margin: EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: isHighlighted ? Colors.red : Colors.white,
+                        borderRadius: BorderRadius.circular(5),
+                        border: isHighlighted ? Border.all(color: Colors.red, width: 2) : null,
+                      ),
+                      child: Center(
+                        child: Text(
+                          categorizedMenu[index]['category'],
+                          style: TextStyle(
+                            color: isHighlighted ? Colors.white : Colors.black,
+                            fontSize: 17,
+                            fontWeight: isHighlighted ? FontWeight.bold : FontWeight.normal,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                );
-              },
-            ),
-          ),
-          // Заголовок категории
-          Container(
-            padding: const EdgeInsets.fromLTRB(20, 15, 0, 0),
-            child: Text(
-              categorizedMenu[_selectedCategoryIndex]['category'],
-              style: TextStyle(
-                fontSize: 40,
-                fontWeight: FontWeight.bold,
+                  );
+                },
               ),
             ),
-          ),
-          // Сетка с блюдами
-          Expanded( 
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 10.0,
-                  mainAxisSpacing: 10.0,
-                  childAspectRatio: 2 / 3,
-                ),
-                itemCount: categorizedMenu[_selectedCategoryIndex]['items'].length,
-                itemBuilder: (context, index) {
-                  final item = categorizedMenu[_selectedCategoryIndex]['items'][index];
-                  return item;
-                },
-                padding: EdgeInsets.all(20),
+            // Основной скролл с категориями и блюдами
+            Expanded(
+              child: CustomScrollView(
+                controller: _scrollController,
+                slivers: [
+                  for (var category in categorizedMenu) ...[
+                    // Якорь категории
+                    SliverToBoxAdapter(
+                      key: _categoryKeys[category['category']],
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 15, 0, 15),
+                        child: Text(
+                          category['category'],
+                          style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    // Сетка с блюдами
+                    SliverPadding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      sliver: SliverGrid(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 10.0,
+                          mainAxisSpacing: 10.0,
+                          childAspectRatio: 2 / 3,
+                        ),
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            final item = category['items'][index];
+                            return item;
+                          },
+                          childCount: category['items'].length,
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ),
           ],
         ),
-      ),
+      ) ,
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -169,7 +206,7 @@ class _MenuState extends State<Menu> {
             label: 'Корзина',
           ),
         ],
-        currentIndex: 1,
+        currentIndex: _selectedIndex,
         selectedItemColor: Colors.black,
         onTap: _onItemTapped,
       ),

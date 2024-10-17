@@ -30,31 +30,33 @@ class _MenuState extends State<Menu> {
 
   // Метод для обновления активной категории при скролле
   void _onScroll() {
-  final screenHeight = MediaQuery.of(context).size.height;
-  final scrollOffset = _scrollController.offset;
+    final scrollOffset = _scrollController.offset;
+    final screenHeight = MediaQuery.of(context).size.height;
 
-  for (int i = 0; i < categorizedMenu.length; i++) {
-    final key = _categoryKeys[categorizedMenu[i]['category']];
-    if (key != null) {
-      final context = key.currentContext;
-      if (context != null) {
-        final box = context.findRenderObject() as RenderBox;
+    for (int i = 0; i < categorizedMenu.length; i++) {
+      final key = _categoryKeys[categorizedMenu[i]['category']];
+      if (key != null) {
+        final context = key.currentContext;
+        if (context != null) {
+          final box = context.findRenderObject() as RenderBox;
 
-        // Получаем положение категории
-        final categoryOffset = box.localToGlobal(Offset.zero).dy;
+          // Определение позиции категории
+          final categoryOffset = box.localToGlobal(Offset.zero).dy;
+          final categoryHeight = box.size.height;
 
-        // Проверка, находится ли категория в пределах видимости экрана
-        if (categoryOffset >= scrollOffset && categoryOffset < scrollOffset + screenHeight - AppBar().preferredSize.height - 65) {
-          setState(() {
-            _highlightedCategoryIndex = i;
-          });
-          break; // Выход из цикла, когда найдена первая видимая категория
+          // Проверяем, находится ли категория в пределах видимости экрана
+          if (categoryOffset + categoryHeight > 0 &&
+              categoryOffset < screenHeight) {
+            // Если категория в пределах видимости, обновляем подсветку
+            setState(() {
+              _highlightedCategoryIndex = i;
+            });
+            break; // Выходим из цикла при нахождении первой видимой категории
+          }
         }
       }
     }
   }
-}
-
 
   // Метод для плавного скролла к нужной категории
   void _scrollToCategory(String category) {
@@ -104,7 +106,7 @@ class _MenuState extends State<Menu> {
       body: Container(
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.only(topRight: Radius.circular(20), topLeft: Radius.circular(20)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -130,7 +132,7 @@ class _MenuState extends State<Menu> {
                         borderRadius: BorderRadius.circular(5),
                         border: isHighlighted ? Border.all(color: Colors.red, width: 2) : null,
                       ),
-                      child: Center(
+                      child: Center(  
                         child: Text(
                           categorizedMenu[index]['category'],
                           style: TextStyle(
@@ -190,7 +192,7 @@ class _MenuState extends State<Menu> {
             ),
           ],
         ),
-      ) ,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(

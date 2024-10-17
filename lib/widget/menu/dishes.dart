@@ -128,7 +128,6 @@ class Dishes extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Получаем провайдер корзины
     final cart = Provider.of<CartProvider>(context);
     // Проверяем, есть ли этот товар в корзине
     final index = cart.items.indexWhere((item, ) => item.dish_name == dish_name);
@@ -160,8 +159,8 @@ class Dishes extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(dish_name),
-                Text("${weight.toString()} г"),
+                Text(dish_name, style: TextStyle(fontFamily: "Inter", fontSize: 14, fontWeight: FontWeight.w600)),
+                Text("${weight.toString()} г", style: TextStyle(fontFamily: "Inter", fontSize: 12, fontWeight: FontWeight.w600, color: Colors.black45)),
                 // SizedBox(height: 20),
                 if (isInCart)
                   Row(

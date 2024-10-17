@@ -266,7 +266,6 @@ class _CheckoutScreenDelivState extends State<CheckoutScreenDeliv> {
                 maxLines: 3,
               ),
               SizedBox(height: 20),
-
               // Блок "Заказ"
               Container(
                 padding: EdgeInsets.all(16),
@@ -282,17 +281,22 @@ class _CheckoutScreenDelivState extends State<CheckoutScreenDeliv> {
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 10),
-                    Text("Сумма заказа: ${cart.totalAmount().toString()} р"),
-                    Text("Скидка: ${cart.discountPercent}% ${cart.calculatediscountInRublesTotal().toStringAsFixed(2)} р", 
+                    Text("Сумма ${cart.totalAmount().toString()} р"),
+                    Text("Скидка -${cart.discountPercent}% ${cart.calculatediscountInRublesTotal().toStringAsFixed(2)} р", 
                     style: TextStyle(color: Colors.red)),
                     SizedBox(height: 10),
                     Text(
-                      "Всего к оплате: ${cart.calctotalToPay().toStringAsFixed(2)} р",
+                      "Всего к оплате ${cart.calctotalToPay().toStringAsFixed(2)} р",
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 20),
                     // Кнопка "Оформить заказ"
-                    SizedBox(
+                    
+                  ],
+                ),
+              ),
+              Container(
+                      padding: EdgeInsets.all(20),
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
@@ -301,7 +305,7 @@ class _CheckoutScreenDelivState extends State<CheckoutScreenDeliv> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.red,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(3),
                           ),
                         ),
                         child: Row(
@@ -317,9 +321,6 @@ class _CheckoutScreenDelivState extends State<CheckoutScreenDeliv> {
                         ),
                       ),
                     ),
-                  ],
-                ),
-              ),
             ],
           ),
         ),

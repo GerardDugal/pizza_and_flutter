@@ -211,7 +211,7 @@ class Dishes extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () {
                       with_fillings
-                           ? Navigator.push(
+                          ? Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => DishDetailScreen(
@@ -225,7 +225,7 @@ class Dishes extends StatelessWidget {
                                 ),
                               ),
                             )
-                         : cart.addItem(dish_name, price, weight, picture, description, "", []);
+                        : cart.addItem(dish_name, price, weight, picture, description, "", []);
                     },
                     child: Text(
                       "${price} р",

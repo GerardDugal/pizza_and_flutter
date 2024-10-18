@@ -158,14 +158,15 @@ class _DelivState extends State<Deliv> {
   Widget _DeliveryOrdersDetailed(){
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(title: Center(
-        child: Column(
+      appBar: AppBar(
+        title: Column(
           children: [
             Text("Заказ №${widget.number} от ${widget.date}", style: TextStyle(color: Colors.black, fontSize: 18, fontFamily: "Inter", fontWeight: FontWeight.w700)),
             Text("${widget.count_positions} позиции на ${widget.price} ₽", style: TextStyle(color: Colors.red, fontSize: 14, fontFamily: "Inter", fontWeight: FontWeight.w600),)
           ],
         ),
-      )),
+        centerTitle: true,
+      ),
       body: Column(
         children: [
           Container(

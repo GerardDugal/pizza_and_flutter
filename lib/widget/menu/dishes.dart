@@ -154,13 +154,18 @@ class Dishes extends StatelessWidget {
           ),
           Container(
             height: 120,
-            padding: EdgeInsets.fromLTRB(10, 5, 10, 0),
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 6),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(dish_name, style: TextStyle(fontFamily: "Inter", fontSize: 14, fontWeight: FontWeight.w600)),
-                Text("${weight.toString()} г", style: TextStyle(fontFamily: "Inter", fontSize: 12, fontWeight: FontWeight.w600, color: Colors.black45)),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(dish_name, style: TextStyle(fontFamily: "Inter", fontSize: 16, fontWeight: FontWeight.w500)),
+                    Text("${weight.toString()} г", style: TextStyle(fontFamily: "Inter", fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black45)),
+                  ],
+                ),
                 // SizedBox(height: 20),
                 if (isInCart)
                   Row(

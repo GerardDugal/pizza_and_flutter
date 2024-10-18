@@ -10,11 +10,12 @@ class CartScreen extends StatelessWidget {
     final cart = Provider.of<CartProvider>(context);
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text('В корзине ${cart.items.length} позиции на ${cart.totalToPay} Р'),
       ),
       body: cart.items.isEmpty
-          ? Center(child: Text("Корзина пуста"))
+          ? const Center(child: Text("Корзина пуста"))
           : ListView.builder(
               itemCount: cart.items.length,
               itemBuilder: (context, index) {
@@ -30,81 +31,90 @@ class CartScreen extends StatelessWidget {
                 );
               },
             ),
-      bottomNavigationBar: Container(
-        padding: EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1), // Легкая тень
-              offset: Offset(0, -2), // Тень наверх
-              blurRadius: 8,
+      bottomNavigationBar: BottomBar(cart: cart),
+    );
+  }
+}
+
+class BottomBar extends StatelessWidget {
+  const BottomBar({Key? key, required this.cart}) : super(key: key);
+
+  final CartProvider cart;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            offset: const Offset(0, -2),
+            blurRadius: 8,
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          RichText(
+            text: TextSpan(
+              children: [
+                const TextSpan(
+                  text: 'Всего к оплате: ',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 16,
+                  ),
+                ),
+                TextSpan(
+                  text: '${cart.totalAmount()} ₽',
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            // Текст "Всего к оплате" серым, а цена больше
-            RichText(
-              text: TextSpan(
-                children: [
-                  TextSpan(
-                    text: 'Всего к оплате: ',
-                    style: TextStyle(
-                      color: Colors.grey, // Серый цвет для текста
-                      fontSize: 16,
-                    ),
-                  ),
-                  TextSpan(
-                    text: '${cart.totalAmount()} ₽',
-                    style: TextStyle(
-                      color: Colors.black, // Стандартный цвет для цены
-                      fontSize: 20, // Увеличенный размер шрифта для цены
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
+          ),
+          ElevatedButton.icon(
+            onPressed: cart.totalAmount() < 1000
+                ? null
+                : () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CheckoutScreenDeliv(),
+                      ),
+                    );
+                  },
+            icon: Icon(
+              Icons.shopping_cart,
+              color: cart.totalAmount() < 1000 ? Colors.red : Colors.white,
+            ),
+            label: Text(
+              cart.totalAmount() < 1000
+                  ? '${1000 - cart.totalAmount()}₽ до заказа'
+                  : 'Заказ',
+              style: TextStyle(
+                color: cart.totalAmount() < 1000 ? Colors.red : Colors.white,
+                fontSize: cart.totalAmount() < 1000 ? 16 : 18,
               ),
             ),
-            // Проверка суммы для кнопки
-            cart.totalAmount() < 1000
-                ? ElevatedButton.icon(
-                    onPressed: null, // Кнопка неактивна
-                    icon: Icon(Icons.shopping_cart, color: Colors.red), // Красная иконка корзины
-                    label: Text(
-                      '${1000 - cart.totalAmount()}₽ до заказа',
-                      style: TextStyle(color: Colors.red, fontSize: 16), // Красный текст
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.grey, // Серая кнопка
-                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12), // Размер кнопки
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12), // Закругленные углы
-                      ),
-                    ),
-                  )
-                : ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => CheckoutScreenDeliv(),
-                        ),
-                      );
-                    },
-                    icon: Icon(Icons.shopping_cart, color: Colors.white), // Иконка корзины
-                    label: Text('Заказ', style: TextStyle(color: Colors.white, fontSize: 18)), // Текст "Заказ"
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red, // Красная кнопка
-                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12), // Размер кнопки
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12), // Закругленные углы
-                      ),
-                    ),
-                  ),
-          ],
-        ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: cart.totalAmount() < 1000
+                  ? Colors.grey
+                  : Colors.red,
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -119,7 +129,7 @@ class BucketMenu extends StatelessWidget {
   final List<String> additional_filling;
   final String filling;
 
-  BucketMenu({
+  const BucketMenu({
     required this.dish_name,
     required this.price,
     required this.weight,
@@ -135,91 +145,90 @@ class BucketMenu extends StatelessWidget {
     final index = cart.items.indexWhere((item) => item.dish_name == dish_name);
 
     return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      elevation: 4, // Небольшая тень для карточки
-      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Картинка слева
-            Container(
-              width: 120,
-              height: 120,
+      elevation: 0,
+      color: Colors.white,
+      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Картинка слева
+          Container(
+            width: 150,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
               child: picture,
             ),
-            SizedBox(width: 10),
-            // Описание позиции
-            Expanded(
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    dish_name,
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                  ),
-                  Text("Цена: $price руб."),
-                  Text("$filling, ${additional_filling.join(", ")}"),
-                  // Кнопки для изменения количества
+                  _buildRow(dish_name, "$price р"),
+                  const Text("Арт. 13423424342"),
+                  Text("$filling ${additional_filling.join(", ")}"),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _buildCounterButton(cart, "-", dish_name, () {
+                        cart.minusItem(dish_name);
+                      }),
+                      Text(
+                        "${cart.items[index].quantity}",
+                        style: const TextStyle(fontSize: 18),
+                      ),
+                      _buildCounterButton(cart, "+", dish_name, () {
+                        cart.plusItem(dish_name);
+                      }),
+                      IconButton(
+                        icon: const Icon(Icons.delete_forever, color: Colors.black, size: 30),
+                        onPressed: () {
+                          cart.removeItem(dish_name);
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRow(String title, String value) {
+    String limitText(String text, int limit) {
+      return text.length > limit ? '${text.substring(0, limit)}...' : text;
+    }
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // Кнопка уменьшения количества
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.red, // Одинаковый размер для кнопок
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
-            ),
-          ),
-          onPressed: () {
-            cart.minusItem(dish_name);
-          },
-          child: Text(
-            "-", 
-            style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w900), // Увеличенный текст "-"
-          ),
-        ),
-        SizedBox(width: 5), // Отступ между кнопками и количеством
-        // Текущее количество
         Text(
-          "${cart.items[index].quantity}",
-          style: TextStyle(fontSize: 18),
+          limitText(title, 16),
+          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
         ),
-        SizedBox(width: 5), // Отступ между кнопками и количеством
-        // Кнопка увеличения количества
-        
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.red,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
-            ),
-          ),
-          onPressed: () {
-            cart.plusItem(dish_name);
-          },
-          child: Text(
-            "+", 
-           style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w900), // Увеличенный текст "+"
-          ),
+        Text(
+          value,
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
         ),
-        IconButton(
-      icon: Icon(Icons.delete, color: Colors.red),
-      onPressed: () {
-        cart.removeItem(dish_name);
-      },
-    ),
       ],
-    ),
-  ],
-),
-            ),
-          ],
+    );
+  }
+
+  Widget _buildCounterButton(CartProvider cart, String label, String dishName, VoidCallback onPressed) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.red,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
         ),
+      ),
+      onPressed: onPressed,
+      child: Text(
+        label,
+        style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w900),
       ),
     );
   }

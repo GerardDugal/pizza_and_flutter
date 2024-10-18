@@ -119,41 +119,54 @@ class OrderDishes extends StatelessWidget{
   Widget build(BuildContext context) {
 
     return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      elevation: 4, // Небольшая тень для карточки
-      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Картинка слева
-            Container(
-              width: 120,
-              height: 120,
+      elevation: 0,
+      color: Colors.white,
+      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Картинка слева
+          Container(
+            width: 150,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
               child: picture,
             ),
-            SizedBox(width: 10),
-            // Описание позиции
-            Expanded(
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    dish_name,
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                  ),
-                  Text("Цена: $price руб."),
-                  Text("$filling, ${additional_filling.join(", ")}"),
-                  Text("$quantity шт."),
-                  ],
+                  _buildRow(dish_name, "$price р"),
+                  Text("$filling ${additional_filling.join(", ")}"),
+                  Text("$quantity шт.")
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
+    );
+  }
+
+  Widget _buildRow(String title, String value) {
+    String limitText(String text, int limit) {
+      return text.length > limit ? '${text.substring(0, limit)}...' : text;
+    }
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          limitText(title, 16),
+          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+        ),
+        Text(
+          value,
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+        ),
+      ],
     );
   }
 }

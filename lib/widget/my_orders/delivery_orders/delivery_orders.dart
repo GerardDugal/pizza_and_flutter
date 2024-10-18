@@ -157,6 +157,7 @@ class _DelivState extends State<Deliv> {
 
   Widget _DeliveryOrdersDetailed(){
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(title: Center(
         child: Column(
           children: [

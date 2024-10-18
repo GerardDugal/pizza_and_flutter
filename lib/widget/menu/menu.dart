@@ -17,7 +17,7 @@ List<Map<String, dynamic>> categorizedMenu = [
     'category': 'Пицца',
     'items': [
       Dishes(
-        dish_name: "Маргарита",
+        dish_name: "Пицца с помидорами черри",
         price: getRandomPrice(),
         weight: getRandomWeight(),
         description: "Классическая пицца с томатным соусом и свежей моцареллой.",

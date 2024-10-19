@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:pizza_and_flutter/api_clients/api_client.dart';
 import 'package:pizza_and_flutter/widget/menu/dishes.dart';
 import 'package:pizza_and_flutter/widget/menu/menu_main.dart';
 import 'package:pizza_and_flutter/widget/my_orders/my_orders_main.dart';
@@ -148,6 +149,10 @@ class _PanelsState extends State<Panel> {
               context,
               MaterialPageRoute(builder: (context) => Menu()),
             );
+          }
+          if (widget.name == "Самовывоз") {
+            ApiClient apiclient = ApiClient();
+            apiclient.getPosts();
           }
         },
       ),

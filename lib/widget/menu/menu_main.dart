@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pizza_and_flutter/widget/bucket/bucket.dart';
 import 'package:pizza_and_flutter/widget/menu/dishes.dart';
 import 'package:pizza_and_flutter/widget/menu/menu.dart';
+import 'package:pizza_and_flutter/widget/menu/menu_model.dart';
 import 'package:pizza_and_flutter/widget/start_screen.dart';
 
 class Menu extends StatefulWidget {

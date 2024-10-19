@@ -4,6 +4,7 @@ import 'package:pizza_and_flutter/api_clients/api_client.dart';
 import 'package:pizza_and_flutter/widget/menu/dishes.dart';
 import 'package:pizza_and_flutter/widget/menu/menu_main.dart';
 import 'package:pizza_and_flutter/widget/my_orders/my_orders_main.dart';
+import 'package:provider/provider.dart';
 
 class StartScreen extends StatefulWidget {
   const StartScreen({super.key});

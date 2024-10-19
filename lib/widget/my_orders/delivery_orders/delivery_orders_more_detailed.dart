@@ -99,7 +99,7 @@ class OrderStatusWidget extends StatelessWidget {
 class OrderDishes extends StatelessWidget{
   final String dish_name;
   final int price;
-  final int weight;
+  final String weight;
   final int quantity;
   final dynamic picture;
   final List<String> additional_filling;

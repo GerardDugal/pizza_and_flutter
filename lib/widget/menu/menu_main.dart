@@ -4,6 +4,7 @@ import 'package:pizza_and_flutter/widget/menu/dishes.dart';
 import 'package:pizza_and_flutter/widget/menu/menu.dart';
 import 'package:pizza_and_flutter/widget/menu/menu_model.dart';
 import 'package:pizza_and_flutter/widget/start_screen.dart';
+import 'package:provider/provider.dart';
 
 class Menu extends StatefulWidget {
   @override
@@ -19,7 +20,6 @@ class _MenuState extends State<Menu> {
   @override
   void initState() {
     super.initState();
-
     // Добавляем слушатель для скролла
     _scrollController.addListener(_onScroll);
   }
@@ -28,7 +28,7 @@ class _MenuState extends State<Menu> {
   void _onScroll() {
     final scrollOffset = _scrollController.offset;
     for (int i = 0; i < categorizedMenu.length; i++) {
-      final offset = _categoryOffsets[categorizedMenu[i]['category']] ?? 0;
+      final offset = _categoryOffsets[categorizedMenu[i]] ?? 0;
 
       // Проверяем, попадает ли категория в видимую область экрана
       if (scrollOffset >= offset - 200) {
@@ -41,7 +41,7 @@ class _MenuState extends State<Menu> {
 
   // Метод для скролла к нужной категории
   void _scrollToCategory(int index) {
-    final categoryOffset = _categoryOffsets[categorizedMenu[index]['category']] ?? 0;
+    final categoryOffset = _categoryOffsets[categorizedMenu[index]] ?? 0;
     _scrollController.animateTo(
       categoryOffset,
       duration: Duration(milliseconds: 300),
@@ -87,6 +87,9 @@ class _MenuState extends State<Menu> {
 
   @override
   Widget build(BuildContext context) {
+    final cart = Provider.of<CartProvider>(context);
+    cart.addDishes();
+    
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 240, 240, 240),
       appBar: AppBar(
@@ -124,7 +127,7 @@ class _MenuState extends State<Menu> {
                       ),
                       child: Center(
                         child: Text(
-                          categorizedMenu[index]['category'],
+                          "Категория",
                           style: TextStyle(
                             color: isHighlighted ? Colors.white : Colors.black,
                             fontSize: 17,
@@ -147,11 +150,12 @@ class _MenuState extends State<Menu> {
                     SliverToBoxAdapter(
                       child: Builder(
                         builder: (context) {
-                          _onCategoryLayout(category['category'], context);
+                          _onCategoryLayout("Категория", context);
                           return Padding(
                             padding: const EdgeInsets.fromLTRB(20, 15, 0, 15),
                             child: Text(
-                              category['category'],
+                              "Категория",
+                              // category['category'],
                               style: TextStyle(
                                 fontSize: 30,
                                 fontWeight: FontWeight.bold,
@@ -173,10 +177,10 @@ class _MenuState extends State<Menu> {
                         ),
                         delegate: SliverChildBuilderDelegate(
                           (context, index) {
-                            final item = category['items'][index];
+                            final item = Text('Категория');
                             return item;
                           },
-                          childCount: category['items'].length,
+                          childCount: 5,
                         ),
                       ),
                     ),

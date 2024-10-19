@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pizza_and_flutter/api_clients/api_client.dart';
 import 'package:pizza_and_flutter/widget/menu/detailed_dish.dart';
 import 'package:provider/provider.dart';
 
@@ -6,7 +7,7 @@ import 'package:provider/provider.dart';
 class CartItem {
   final String dish_name;
   final int price;
-  final int weight;
+  final String weight;
   int quantity;
   String description;
   final Image picture;
@@ -24,8 +25,24 @@ class CartItem {
     required this.additional_filling, // Убираем значение по умолчанию
   });// Инициализируем с помощью значения по умолчанию
 }
+List<Dishes> categorizedMenu = [];
 
 class CartProvider with ChangeNotifier {
+   final apiclient = ApiClient();
+  
+  Future<void> addDishes() async{
+    final post = await apiclient.getPosts();
+    for (var i = 0; i < post.categories.length; i++) {
+      final dish_name = post.positions[i].title;
+      final price = post.prices[post.positions[i].id];
+      final weight = post.positions[i].weight;
+      final picture = post.positions[i].image_url;
+      final description = post.positions[i].descr;
+      categorizedMenu.add(Dishes(dish_name: dish_name, price: price![0], weight: weight, picture: picture, description: description, filling: [{"хуй" : 0}], additional_filling: []));
+    }
+    notifyListeners();
+  }
+
   final List<CartItem> _items = [];
   double discountPercent = 10.0; // Скидка в процентах
   double discountInRubles = 0.0; // Скидка в рублях
@@ -33,7 +50,7 @@ class CartProvider with ChangeNotifier {
 
   List<CartItem> get items => _items;
 
-  void addItem(String name, int price, int weight, dynamic picture, String description, String filling, List<String> adding) {
+  void addItem(String name, int price, String weight, dynamic picture, String description, String filling, List<String> adding) {
     // Проверка, есть ли уже такой товар в корзине
     final index = _items.indexWhere((item) => item.dish_name == name);
     if (index >= 0) {
@@ -92,7 +109,7 @@ class CartProvider with ChangeNotifier {
 class Dishes extends StatelessWidget {
   final String dish_name;
   final int price;
-  final int weight;
+  final String weight;
   final dynamic picture;
   final String description;
   bool with_fillings;

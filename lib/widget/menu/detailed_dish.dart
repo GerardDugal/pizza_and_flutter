@@ -7,7 +7,7 @@ class DishDetailScreen extends StatefulWidget {
   final String description;
   final Image image;
   final int basePrice;
-  final int weight;
+  final String weight;
   final List<Map<String, int>> fillings; // Наполнения с ценой
   final List<Map<String, int>> additionalFillings; // Дополнительные наполнения с ценой
 

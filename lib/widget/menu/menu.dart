@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:pizza_and_flutter/widget/menu/dishes.dart';
 import 'dart:math';
 
-final Random random = Random();
+// final Random random = Random();
 
-int getRandomPrice() {
-  return random.nextInt(901) + 100; // Генерация случайной цены от 100 до 1000
-}
+// int getRandomPrice() {
+//   return random.nextInt(901) + 100; // Генерация случайной цены от 100 до 1000
+// }
 
-int getRandomWeight() {
-  return random.nextInt(1301) + 200; // Генерация случайной граммовки от 200 до 1500
-}
+// int getRandomWeight() {
+//   return random.nextInt(1301) + 200; // Генерация случайной граммовки от 200 до 1500
+// }
 
 // List<Map<String, dynamic>> categorizedMenu = [
 //   {

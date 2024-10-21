@@ -5,7 +5,7 @@ import 'package:pizza_and_flutter/domain/entity/post.dart';
 class ApiClient {
   final int limit; // Максимальное количество позиций для парсинга
 
-  ApiClient({this.limit = 5}); // По умолчанию ограничиваем до 5 элементов
+  ApiClient({this.limit = 300}); // По умолчанию ограничиваем до 5 элементов
 
   Future<Post> getPosts() async {
     // Используем http для отправки GET-запроса

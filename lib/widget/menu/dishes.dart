@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pizza_and_flutter/api_clients/api_client.dart';
 import 'package:pizza_and_flutter/widget/menu/detailed_dish.dart';
+import 'package:pizza_and_flutter/widget/menu/menu.dart';
 import 'package:provider/provider.dart';
 
 
@@ -10,7 +11,7 @@ class CartItem {
   final String weight;
   int quantity;
   String description;
-  final Image picture;
+  final String picture;
   final List<String> additional_filling;
   final String filling;
 
@@ -25,20 +26,40 @@ class CartItem {
     required this.additional_filling, // Убираем значение по умолчанию
   });// Инициализируем с помощью значения по умолчанию
 }
-List<Dishes> categorizedMenu = [];
+
+// Создать список предприятий с присвоением индивидуального номера
+// Создать список с дополнениями
 
 class CartProvider with ChangeNotifier {
   final apiclient = ApiClient();
-  
   Future<void> addDishes() async{
+
+    
+    Map<String, dynamic>? getCategoryById(int id) {
+      return categorizedMenu.firstWhere(
+        (category) => category['category_id'] == id,
+      );}
+
     final post = await apiclient.getPosts();
-    for (var i = 0; i < 2; i++) {
+    for (var i = 0; i < 300; i++) {
       final dish_name = post.positions[i].title;
       final price = post.prices[post.positions[i].id];
       final weight = post.positions[i].weight;
       final picture = post.positions[i].image_url;
       final description = post.positions[i].descr;
-      categorizedMenu.add(Dishes(dish_name: dish_name, price: price![0], weight: weight, picture: picture, description: description, filling: [{"хуй" : 0}], additional_filling: []));
+
+      // final index1 = categorizedMenu[1]['items'].indexWhere((item) => item.dish_name == post.positions[i].title);
+      // final index2 = categorizedMenu[2]['items'].indexWhere((item) => item.dish_name == post.positions[i].title);
+      bool flag = false;
+      for (var j = 0; j < categorizedMenu.length; j++) {
+        final index = categorizedMenu[j]['items'].indexWhere((item) => item.dish_name == post.positions[i].title);
+        if(index >= 0){flag = true; break;}
+      }
+      if (flag || post.positions[i].menu_cat_id == 10953 || post.positions[i].menu_cat_id == 11381 || post.positions[i].menu_cat_id == 11861 || post.positions[i].menu_cat_id == 11862 || post.positions[i].menu_cat_id == 11943 || post.positions[i].menu_cat_id == 12146) {
+      print("Элемент уже есть в  меню либо не должен отображаться в меню");
+      } else {
+      getCategoryById(post.positions[i].menu_cat_id)!['items'].add(Dishes(dish_name: dish_name, price: price![0], weight: weight, picture: picture, description: description, filling: [{"хуй" : 0}], additional_filling: []));
+      }
     }
     notifyListeners();
   }
@@ -50,7 +71,7 @@ class CartProvider with ChangeNotifier {
 
   List<CartItem> get items => _items;
 
-  void addItem(String name, int price, String weight, dynamic picture, String description, String filling, List<String> adding) {
+  void addItem(String name, int price, String weight, String picture, String description, String filling, List<String> adding) {
     // Проверка, есть ли уже такой товар в корзине
     final index = _items.indexWhere((item) => item.dish_name == name);
     if (index >= 0) {
@@ -153,7 +174,16 @@ class Dishes extends StatelessWidget {
           //   borderRadius: BorderRadius.circular(10), // Закругление углов на 10
           //   child: picture // Масштабирование изображения
           // ),
-          Container(color: Colors.green,),
+          picture == null ? Container(color: Colors.green, height: 120,) 
+          :  ClipRRect(
+            borderRadius: BorderRadius.circular(8.0),
+            child: Image.network(
+                picture, 
+                height: 135,
+                fit: BoxFit.cover,
+                width: double.infinity,
+                ),
+          ),
           Container(
             height: 120,
             padding: EdgeInsets.fromLTRB(10, 0, 10, 6),

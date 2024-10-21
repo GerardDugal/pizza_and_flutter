@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 class DishDetailScreen extends StatefulWidget {
   final String dishName;
   final String description;
-  final Image image;
+  final String image;
   final int basePrice;
   final String weight;
   final List<Map<String, int>> fillings; // Наполнения с ценой
@@ -65,9 +65,7 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
           children: [
             Stack(
               children: [
-                // Ваше изображение
-                widget.image,
-            
+                Image.network(widget.image),
                 // Кнопка возврата
                 Positioned(
                   top: 50.0, // Отступ сверху

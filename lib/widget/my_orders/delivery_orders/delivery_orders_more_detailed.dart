@@ -130,7 +130,12 @@ class OrderDishes extends StatelessWidget{
             width: 150,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              child: picture,
+              child: Image.network(
+                picture, 
+                height: 135,
+                fit: BoxFit.cover,
+                width: double.infinity,
+                ),
             ),
           ),
           Expanded(

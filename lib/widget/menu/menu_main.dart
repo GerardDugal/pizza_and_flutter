@@ -28,7 +28,7 @@ class _MenuState extends State<Menu> {
   void _onScroll() {
     final scrollOffset = _scrollController.offset;
     for (int i = 0; i < categorizedMenu.length; i++) {
-      final offset = _categoryOffsets[categorizedMenu[i]] ?? 0;
+      final offset = _categoryOffsets[categorizedMenu[i]['category_name']] ?? 0;
 
       // Проверяем, попадает ли категория в видимую область экрана
       if (scrollOffset >= offset - 200) {
@@ -41,7 +41,8 @@ class _MenuState extends State<Menu> {
 
   // Метод для скролла к нужной категории
   void _scrollToCategory(int index) {
-    final categoryOffset = _categoryOffsets[categorizedMenu[index]] ?? 0;
+    final categoryOffset = _categoryOffsets[categorizedMenu[index]['category_name']] ?? 0;
+    
     _scrollController.animateTo(
       categoryOffset,
       duration: Duration(milliseconds: 300),
@@ -127,7 +128,7 @@ class _MenuState extends State<Menu> {
                       ),
                       child: Center(
                         child: Text(
-                          "Категория",
+                          categorizedMenu[index]['category_name'],
                           style: TextStyle(
                             color: isHighlighted ? Colors.white : Colors.black,
                             fontSize: 17,
@@ -141,59 +142,30 @@ class _MenuState extends State<Menu> {
               ),
             ),
             // Основной скролл с категориями и блюдами
-            // Expanded(
-            //   child: CustomScrollView(
-            //     controller: _scrollController,
-            //     slivers: [
-            //       for (var category in categorizedMenu) ...[
-            //         // Якорь категории
-            //         SliverToBoxAdapter(
-            //           child: Builder(
-            //             builder: (context) {
-            //               _onCategoryLayout("Категория", context);
-            //               return Padding(
-            //                 padding: const EdgeInsets.fromLTRB(20, 15, 0, 15),
-            //                 child: Text(
-            //                   "Категория",
-            //                   // category['category'],
-            //                   style: TextStyle(
-            //                     fontSize: 30,
-            //                     fontWeight: FontWeight.bold,
-            //                   ),
-            //                 ),
-            //               );
-            //             },
-            //           ),
-            //         ),
-            //         // Сетка с блюдами
-            //         SliverPadding(
-            //           padding: const EdgeInsets.symmetric(horizontal: 20),
-            //           sliver: SliverGrid(
-            //             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            //               crossAxisCount: 2,
-            //               crossAxisSpacing: 10.0,
-            //               mainAxisSpacing: 10.0,
-            //               childAspectRatio: 400 / 590,
-            //             ),
-            //             delegate: SliverChildBuilderDelegate(
-            //               (context, index) {
-            //                 final item = Text('Категория');
-            //                 return item;
-            //               },
-            //               childCount: 5,
-            //             ),
-            //           ),
-            //         ),
-            //       ],
-            //     ],
-            //   ),
-            // ),
-
             Expanded(
               child: CustomScrollView(
                 controller: _scrollController,
                 slivers: [
-                  for (var positions in categorizedMenu) ...[
+                  for (var category in categorizedMenu) ...[
+                    // Якорь категории
+                    SliverToBoxAdapter(
+                      child: Builder(
+                        builder: (context) {
+                          _onCategoryLayout(category['category_name'], context);
+                          return Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 15, 0, 15),
+                            child: Text(
+                              category['category_name'],
+                              style: TextStyle(
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    // Сетка с блюдами
                     SliverPadding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       sliver: SliverGrid(
@@ -205,9 +177,10 @@ class _MenuState extends State<Menu> {
                         ),
                         delegate: SliverChildBuilderDelegate(
                           (context, index) {
-                            return positions;
+                            final item = category['items'][index];
+                            return item;
                           },
-                          childCount: 5,
+                          childCount: category['items'].length,
                         ),
                       ),
                     ),
@@ -215,6 +188,33 @@ class _MenuState extends State<Menu> {
                 ],
               ),
             ),
+            // Работающий вариант с отображением позиций
+            // Expanded(
+            //   child: CustomScrollView(
+            //     controller: _scrollController,
+            //     slivers: [
+            //       for (var positions in categorizedMenu) ...[
+            //         SliverPadding(
+            //           padding: const EdgeInsets.symmetric(horizontal: 20),
+            //           sliver: SliverGrid(
+            //             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            //               crossAxisCount: 2,
+            //               crossAxisSpacing: 10.0,
+            //               mainAxisSpacing: 10.0,
+            //               childAspectRatio: 400 / 590,
+            //             ),
+            //             delegate: SliverChildBuilderDelegate(
+            //               (context, index) {
+            //                 return positions;
+            //               },
+            //               childCount: 2,
+            //             ),
+            //           ),
+            //         ),
+            //       ],
+            //     ],
+            //   ),
+            // ),
           ],
         ),
       ),

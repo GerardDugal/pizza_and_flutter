@@ -141,31 +141,59 @@ class _MenuState extends State<Menu> {
               ),
             ),
             // Основной скролл с категориями и блюдами
+            // Expanded(
+            //   child: CustomScrollView(
+            //     controller: _scrollController,
+            //     slivers: [
+            //       for (var category in categorizedMenu) ...[
+            //         // Якорь категории
+            //         SliverToBoxAdapter(
+            //           child: Builder(
+            //             builder: (context) {
+            //               _onCategoryLayout("Категория", context);
+            //               return Padding(
+            //                 padding: const EdgeInsets.fromLTRB(20, 15, 0, 15),
+            //                 child: Text(
+            //                   "Категория",
+            //                   // category['category'],
+            //                   style: TextStyle(
+            //                     fontSize: 30,
+            //                     fontWeight: FontWeight.bold,
+            //                   ),
+            //                 ),
+            //               );
+            //             },
+            //           ),
+            //         ),
+            //         // Сетка с блюдами
+            //         SliverPadding(
+            //           padding: const EdgeInsets.symmetric(horizontal: 20),
+            //           sliver: SliverGrid(
+            //             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            //               crossAxisCount: 2,
+            //               crossAxisSpacing: 10.0,
+            //               mainAxisSpacing: 10.0,
+            //               childAspectRatio: 400 / 590,
+            //             ),
+            //             delegate: SliverChildBuilderDelegate(
+            //               (context, index) {
+            //                 final item = Text('Категория');
+            //                 return item;
+            //               },
+            //               childCount: 5,
+            //             ),
+            //           ),
+            //         ),
+            //       ],
+            //     ],
+            //   ),
+            // ),
+
             Expanded(
               child: CustomScrollView(
                 controller: _scrollController,
                 slivers: [
-                  for (var category in categorizedMenu) ...[
-                    // Якорь категории
-                    SliverToBoxAdapter(
-                      child: Builder(
-                        builder: (context) {
-                          _onCategoryLayout("Категория", context);
-                          return Padding(
-                            padding: const EdgeInsets.fromLTRB(20, 15, 0, 15),
-                            child: Text(
-                              "Категория",
-                              // category['category'],
-                              style: TextStyle(
-                                fontSize: 30,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                    // Сетка с блюдами
+                  for (var positions in categorizedMenu) ...[
                     SliverPadding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       sliver: SliverGrid(
@@ -177,8 +205,7 @@ class _MenuState extends State<Menu> {
                         ),
                         delegate: SliverChildBuilderDelegate(
                           (context, index) {
-                            final item = Text('Категория');
-                            return item;
+                            return positions;
                           },
                           childCount: 5,
                         ),

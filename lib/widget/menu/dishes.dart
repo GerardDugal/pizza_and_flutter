@@ -28,11 +28,11 @@ class CartItem {
 List<Dishes> categorizedMenu = [];
 
 class CartProvider with ChangeNotifier {
-   final apiclient = ApiClient();
+  final apiclient = ApiClient();
   
   Future<void> addDishes() async{
     final post = await apiclient.getPosts();
-    for (var i = 0; i < post.categories.length; i++) {
+    for (var i = 0; i < 2; i++) {
       final dish_name = post.positions[i].title;
       final price = post.prices[post.positions[i].id];
       final weight = post.positions[i].weight;
@@ -149,10 +149,11 @@ class Dishes extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10), // Закругление углов на 10
-            child: picture // Масштабирование изображения
-          ),
+          // ClipRRect(
+          //   borderRadius: BorderRadius.circular(10), // Закругление углов на 10
+          //   child: picture // Масштабирование изображения
+          // ),
+          Container(color: Colors.green,),
           Container(
             height: 120,
             padding: EdgeInsets.fromLTRB(10, 0, 10, 6),

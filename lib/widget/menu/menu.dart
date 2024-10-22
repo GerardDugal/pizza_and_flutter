@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:pizza_and_flutter/widget/menu/dishes.dart';
 import 'dart:math';
 
-Set<int> setOfAdresses = {};
-
 List<Map<String, dynamic>> categorizedMenu = [
   {
     'category_name': 'Пицца',

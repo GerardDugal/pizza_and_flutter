@@ -89,9 +89,6 @@ class _MenuState extends State<Menu> {
 
   @override
   Widget build(BuildContext context) {
-    // final cart = Provider.of<CartProvider>(context);
-    // cart.addDishes();
-    
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 240, 240, 240),
       appBar: AppBar(

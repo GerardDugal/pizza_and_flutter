@@ -117,7 +117,7 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
                 String fillingName = filling.keys.first;
                 int price = filling.values.first;
                 return RadioListTile<String>(
-                   fillColor: WidgetStateProperty.resolveWith((states) {
+                  fillColor: WidgetStateProperty.resolveWith((states) {
                     if (!states.contains(WidgetState.selected)) {
                       return Colors.grey;
                     }

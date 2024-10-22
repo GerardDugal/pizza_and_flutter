@@ -5,7 +5,6 @@ import 'package:pizza_and_flutter/widget/menu/menu.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
-
 class CartItem {
   final String dish_name;
   final int price;
@@ -27,9 +26,6 @@ class CartItem {
     required this.additional_filling, // Убираем значение по умолчанию
   });// Инициализируем с помощью значения по умолчанию
 }
-
-// Создать список предприятий с присвоением индивидуального номера
-// Создать список с дополнениями
 
 class CartProvider with ChangeNotifier {
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pizza_and_flutter/widget/bucket/order_registration_delivery.dart';
 import 'package:pizza_and_flutter/widget/bucket/order_registration_pick_up.dart';
 import 'package:pizza_and_flutter/widget/menu/dishes.dart';
+import 'package:pizza_and_flutter/widget/menu/dishes_model.dart';
 import 'package:provider/provider.dart';
 
 class CartScreen extends StatelessWidget {

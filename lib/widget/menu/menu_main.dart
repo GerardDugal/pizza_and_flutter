@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:pizza_and_flutter/api_clients/api_client.dart';
 import 'package:pizza_and_flutter/widget/bucket/bucket.dart';
 import 'package:pizza_and_flutter/widget/menu/dishes.dart';
 import 'package:pizza_and_flutter/widget/menu/menu.dart';
-import 'package:pizza_and_flutter/widget/menu/menu_model.dart';
+import 'package:pizza_and_flutter/widget/menu/dishes_model.dart';
 import 'package:pizza_and_flutter/widget/start_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -88,8 +89,8 @@ class _MenuState extends State<Menu> {
 
   @override
   Widget build(BuildContext context) {
-    final cart = Provider.of<CartProvider>(context);
-    cart.addDishes();
+    // final cart = Provider.of<CartProvider>(context);
+    // cart.addDishes();
     
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 240, 240, 240),
@@ -188,33 +189,6 @@ class _MenuState extends State<Menu> {
                 ],
               ),
             ),
-            // Работающий вариант с отображением позиций
-            // Expanded(
-            //   child: CustomScrollView(
-            //     controller: _scrollController,
-            //     slivers: [
-            //       for (var positions in categorizedMenu) ...[
-            //         SliverPadding(
-            //           padding: const EdgeInsets.symmetric(horizontal: 20),
-            //           sliver: SliverGrid(
-            //             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            //               crossAxisCount: 2,
-            //               crossAxisSpacing: 10.0,
-            //               mainAxisSpacing: 10.0,
-            //               childAspectRatio: 400 / 590,
-            //             ),
-            //             delegate: SliverChildBuilderDelegate(
-            //               (context, index) {
-            //                 return positions;
-            //               },
-            //               childCount: 2,
-            //             ),
-            //           ),
-            //         ),
-            //       ],
-            //     ],
-            //   ),
-            // ),
           ],
         ),
       ),

@@ -146,14 +146,18 @@ class _PanelsState extends State<Panel> {
             );
           }
           if (widget.name == "Доставка") {
+            final apiclient = ApiClient();
+            // apiclient.createAdresses();
+            apiclient.addDishes();
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => Menu()),
             );
           }
           if (widget.name == "Самовывоз") {
-            ApiClient apiclient = ApiClient();
-            apiclient.getPosts();
+            // ApiClient apiclient = ApiClient();
+            // apiclient.getPosts();
+            // apiclient.createAdresses();
           }
         },
       ),

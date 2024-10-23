@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pizza_and_flutter/api_clients/api_client.dart';
+import 'package:pizza_and_flutter/widget/addresses/addresses.dart';
 import 'package:pizza_and_flutter/widget/bucket/bucket.dart';
 import 'package:pizza_and_flutter/widget/menu/dishes.dart';
 import 'package:pizza_and_flutter/widget/menu/menu.dart';
@@ -13,6 +14,8 @@ class Menu extends StatefulWidget {
 }
 
 class _MenuState extends State<Menu> {
+  final ApiClient apicontroller = ApiClient();
+  String selectedAddress = "Выберите адрес ресторана";
   int _selectedIndex = 1;
   int _highlightedCategoryIndex = 0;
   final ScrollController _scrollController = ScrollController();
@@ -69,6 +72,7 @@ class _MenuState extends State<Menu> {
 
     switch (index) {
       case 0:
+        clearMenu();
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -87,13 +91,74 @@ class _MenuState extends State<Menu> {
     }
   }
 
+  void clearMenu(){
+    for (var element in categorizedMenu) {
+      element['items'] = [];
+    }
+    for (var element in listOfAdditionalMenu) {
+      element['items'] = <Map<String, int>>[];
+    }
+  }
+
+  // Метод для отображения модального окна с выбором адреса
+  void _showAddressSelectionModal(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    builder: (BuildContext context) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              "Выберите адрес ресторана",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ),
+          // Добавляем Expanded для скроллинга списка
+          Expanded(
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: listOfAdressesForDelivery.length,
+              itemBuilder: (BuildContext context, int index) {
+                return ListTile(
+                  title: Text(listOfAdressesForDelivery[index]['address']),
+                  onTap: () {
+                    setState(() {
+                      selectedAddress = listOfAdressesForDelivery[index]['address'];
+                    });
+                    apicontroller.setRestaurant(listOfAdressesForDelivery[index]['id']);
+                    clearMenu();
+                    apicontroller.addDishes();
+                    Navigator.pop(context); // Закрыть модальное окно
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 240, 240, 240),
       appBar: AppBar(
-        title: Text("Текущий адрес (адрес доставки)"),
+        automaticallyImplyLeading: false,
+        title: Text(selectedAddress),
         backgroundColor: const Color.fromARGB(255, 240, 240, 240),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.arrow_drop_down),
+            onPressed: () {
+              _showAddressSelectionModal(context);
+            },
+          ),
+        ],
       ),
       body: Container(
         decoration: BoxDecoration(

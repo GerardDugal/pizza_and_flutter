@@ -1,6 +1,18 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'address.g.dart';
+part 'addressesdata.g.dart';
+
+@JsonSerializable()
+class Data {
+  final List<Address> addresses;
+  final List<Region> regions;
+  final Map<String, List<WorkSchedule>> work_schedules;
+
+  Data({required this.addresses, required this.regions, required this.work_schedules});
+
+  factory Data.fromJson(Map<String, dynamic> json) => _$DataFromJson(json);
+  Map<String, dynamic> toJson() => _$DataToJson(this);
+}
 
 @JsonSerializable()
 class Address {
@@ -14,7 +26,7 @@ class Address {
   final String work_hours;
   final String subway;
   final String subway_color;
-  final String phone_number;
+  final String? phone_number;
   final String? photo;
   final String? panorama;
   final bool allow_event_reservation;
@@ -34,8 +46,8 @@ class Address {
   final String route_ru;
   final String route_en;
   final String route_uk;
-  final String delivery_region;
-  final String delivery_region_color;
+  final String? delivery_region;
+  final String? delivery_region_color;
   final String address_color;
   final int city_id;
   final int field_order;
@@ -80,11 +92,38 @@ class Address {
     required this.deleted,
   });
 
-  // Генерируется метод для сериализации
   factory Address.fromJson(Map<String, dynamic> json) => _$AddressFromJson(json);
-
-  // Генерируется метод для десериализации
   Map<String, dynamic> toJson() => _$AddressToJson(this);
+}
+
+@JsonSerializable()
+class Region {
+  final int id;
+  final int address_id;
+  final int zone_order;
+  final int delivery_price;
+  final int minimum_cart;
+  final int free_delivery;
+  final String color;
+  final String vertices;
+  final String terms;
+  final String price_levels;
+
+  Region({
+    required this.id,
+    required this.address_id,
+    required this.zone_order,
+    required this.delivery_price,
+    required this.minimum_cart,
+    required this.free_delivery,
+    required this.color,
+    required this.vertices,
+    required this.terms,
+    required this.price_levels,
+  });
+
+  factory Region.fromJson(Map<String, dynamic> json) => _$RegionFromJson(json);
+  Map<String, dynamic> toJson() => _$RegionToJson(this);
 }
 
 @JsonSerializable()
@@ -127,9 +166,6 @@ class WorkSchedule {
     required this.break_end_minute,
   });
 
-  // Генерируется метод для сериализации
   factory WorkSchedule.fromJson(Map<String, dynamic> json) => _$WorkScheduleFromJson(json);
-
-  // Генерируется метод для десериализации
   Map<String, dynamic> toJson() => _$WorkScheduleToJson(this);
 }

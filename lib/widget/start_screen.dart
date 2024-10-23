@@ -148,6 +148,7 @@ class _PanelsState extends State<Panel> {
           if (widget.name == "Доставка") {
             final apiclient = ApiClient();
             // apiclient.createAdresses();
+            apiclient.addAddresses();
             apiclient.addDishes();
             Navigator.push(
               context,

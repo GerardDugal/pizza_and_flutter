@@ -23,7 +23,6 @@ List<Map<String, dynamic>> categorizedMenu = [
     'category_id': 10660,
     'items': []
   },
-  
 ];
 
 List listOfAdditionalMenuId = [12144, 10953, 11381, 11861, 11862, 11943, 12146];

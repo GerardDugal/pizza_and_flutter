@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:pizza_and_flutter/api_clients/api_client.dart';
 import 'package:pizza_and_flutter/widget/menu/dishes.dart';
+import 'package:pizza_and_flutter/widget/menu/dishes_model.dart';
 import 'package:pizza_and_flutter/widget/menu/menu_main.dart';
 import 'package:pizza_and_flutter/widget/my_orders/my_orders_main.dart';
 import 'package:provider/provider.dart';
@@ -105,7 +106,8 @@ class _PanelsState extends State<Panel> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-
+    final TypeOfOrder = Provider.of<CartProvider>(context);
+    
     return Center(
       child: InkWell(
         child: Container(
@@ -150,15 +152,22 @@ class _PanelsState extends State<Panel> {
             // apiclient.createAdresses();
             apiclient.addAddresses();
             apiclient.addDishes();
+            TypeOfOrder.setTypeOfOrder(1);
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => Menu()),
+              MaterialPageRoute(builder: (context) => Menu(TypeOfOrder: 1,)),
             );
           }
           if (widget.name == "Самовывоз") {
-            // ApiClient apiclient = ApiClient();
-            // apiclient.getPosts();
+            final apiclient = ApiClient();
             // apiclient.createAdresses();
+            apiclient.addAddresses();
+            apiclient.addDishes();
+            TypeOfOrder.setTypeOfOrder(2);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Menu(TypeOfOrder: 2,)),
+            );
           }
         },
       ),

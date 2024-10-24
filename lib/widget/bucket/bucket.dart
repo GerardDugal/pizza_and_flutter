@@ -87,7 +87,7 @@ class BottomBar extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => CheckoutScreenDeliv(),
+                        builder: (context) => cart.TypeOfOrder == 1 ? CheckoutScreenDeliv() : CheckoutScreenPickUp(),
                       ),
                     );
                   },

@@ -9,13 +9,17 @@ import 'package:pizza_and_flutter/widget/start_screen.dart';
 import 'package:provider/provider.dart';
 
 class Menu extends StatefulWidget {
+  final int TypeOfOrder;
+
+  const Menu({super.key, required this.TypeOfOrder});
   @override
   _MenuState createState() => _MenuState();
 }
 
 class _MenuState extends State<Menu> {
   final ApiClient apicontroller = ApiClient();
-  String selectedAddress = "Выберите адрес ресторана";
+  String selectedAddressForPickUp = "Выберите адрес ресторана";
+  String selectedAddressForDelivery = "Выберите адрес доставки";
   int _selectedIndex = 1;
   int _highlightedCategoryIndex = 0;
   final ScrollController _scrollController = ScrollController();
@@ -69,7 +73,6 @@ class _MenuState extends State<Menu> {
     setState(() {
       _selectedIndex = index;
     });
-
     switch (index) {
       case 0:
         clearMenu();
@@ -101,7 +104,50 @@ class _MenuState extends State<Menu> {
   }
 
   // Метод для отображения модального окна с выбором адреса
-  void _showAddressSelectionModal(BuildContext context) {
+  void _showAddressForPickUpSelectionModal(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    builder: (BuildContext context) {
+      final AddressForPickUp = Provider.of<CartProvider>(context);
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              "Выберите адрес ресторана",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ),
+          // Добавляем Expanded для скроллинга списка
+          Expanded(
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: listOfAdressesForPickUp.length,
+              itemBuilder: (BuildContext context, int index) {
+                return ListTile(
+                  title: Text(listOfAdressesForPickUp[index]['address']),
+                  onTap: () {
+                    setState(() {
+                      selectedAddressForPickUp = listOfAdressesForPickUp[index]['address'];
+                    });
+                    apicontroller.setRestaurant(listOfAdressesForPickUp[index]['id']);
+                    clearMenu();
+                    apicontroller.addDishes();
+                    AddressForPickUp.setAddressForPickUp(selectedAddressForPickUp);
+                    Navigator.pop(context); // Закрыть модальное окно
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void _showAddressForDeliverySelectionModal(BuildContext context) {
   showModalBottomSheet(
     context: context,
     builder: (BuildContext context) {
@@ -119,17 +165,14 @@ class _MenuState extends State<Menu> {
           Expanded(
             child: ListView.builder(
               shrinkWrap: true,
-              itemCount: listOfAdressesForDelivery.length,
+              itemCount: listOfAdressesDelivery.length,
               itemBuilder: (BuildContext context, int index) {
                 return ListTile(
-                  title: Text(listOfAdressesForDelivery[index]['address']),
+                  title: Text(listOfAdressesDelivery[index]),
                   onTap: () {
                     setState(() {
-                      selectedAddress = listOfAdressesForDelivery[index]['address'];
+                      selectedAddressForDelivery = listOfAdressesDelivery[index];
                     });
-                    apicontroller.setRestaurant(listOfAdressesForDelivery[index]['id']);
-                    clearMenu();
-                    apicontroller.addDishes();
                     Navigator.pop(context); // Закрыть модальное окно
                   },
                 );
@@ -142,24 +185,45 @@ class _MenuState extends State<Menu> {
   );
 }
 
+  AppBar appBarForPickUp(BuildContext context) { //appbar для самовывоза
+    return AppBar(
+      automaticallyImplyLeading: false,
+      title: Text(selectedAddressForPickUp),
+      backgroundColor: const Color.fromARGB(255, 240, 240, 240),
+      actions: [
+        IconButton(
+          icon: Icon(Icons.arrow_drop_down),
+          onPressed: () {
+            _showAddressForPickUpSelectionModal(context);
+          },
+        ),
+      ],
+    );
+  }
+
+  AppBar appBarForDelivery(BuildContext context) { //appbar для доставки
+    return AppBar(
+      automaticallyImplyLeading: false,
+      title: Text(selectedAddressForPickUp),
+      backgroundColor: const Color.fromARGB(255, 240, 240, 240),
+      actions: [
+        IconButton(
+          icon: Icon(Icons.arrow_drop_down),
+          onPressed: () {
+            _showAddressForDeliverySelectionModal(context);
+          },
+        ),
+      ],
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 240, 240, 240),
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Text(selectedAddress),
-        backgroundColor: const Color.fromARGB(255, 240, 240, 240),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.arrow_drop_down),
-            onPressed: () {
-              _showAddressSelectionModal(context);
-            },
-          ),
-        ],
-      ),
+      appBar: widget.TypeOfOrder == 1 ? appBarForDelivery(context) : appBarForPickUp(context),
       body: Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -275,4 +339,6 @@ class _MenuState extends State<Menu> {
       ),
     );
   }
+
+  
 }

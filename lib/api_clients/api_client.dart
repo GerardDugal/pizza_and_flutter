@@ -39,9 +39,9 @@ class ApiClient {
   Future<void> addAddresses() async {
     final allAddresses = await getAdresses();
     for (var address in allAddresses.addresses) {
-      listOfAdressesForDelivery.add({"id" : address.id, "address" : address.address});
+      listOfAdressesForPickUp.add({"id" : address.id, "address" : address.address});
     }
-    print(listOfAdressesForDelivery);
+    print(listOfAdressesForPickUp);
   }
 
   Future<Post> getPosts() async {

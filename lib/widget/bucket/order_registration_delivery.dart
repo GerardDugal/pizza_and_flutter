@@ -157,7 +157,6 @@ class _CheckoutScreenDelivState extends State<CheckoutScreenDeliv> {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 10),
-
               // Поля для ввода улицы и дома
               Row(
                 children: [
@@ -291,8 +290,6 @@ class _CheckoutScreenDelivState extends State<CheckoutScreenDeliv> {
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 20),
-                    // Кнопка "Оформить заказ"
-                    
                   ],
                 ),
               ),

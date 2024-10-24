@@ -1,33 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:pizza_and_flutter/widget/menu/dishes.dart';
+import 'package:pizza_and_flutter/widget/addresses/addresses.dart';
 import 'package:pizza_and_flutter/widget/menu/dishes_model.dart';
 import 'package:pizza_and_flutter/widget/my_orders/my_orders_main.dart';
 import 'package:pizza_and_flutter/widget/my_orders/orders.dart';
 import 'package:pizza_and_flutter/widget/my_orders/pickup_orders/pickup_orders.dart';
 import 'package:provider/provider.dart';
 
-import '../my_orders/delivery_orders/delivery_orders.dart'; // Для форматирования времени
-
 class CheckoutScreenPickUp extends StatefulWidget {
+
   @override
   _CheckoutScreenPickUpState createState() => _CheckoutScreenPickUpState();
 }
-
 class _CheckoutScreenPickUpState extends State<CheckoutScreenPickUp> {
   String? _selectedAddress; // Выбранный адрес самовывоза
   TimeOfDay? _selectedPickupTime; // Выбранное время самовывоза
   final TextEditingController _commentController = TextEditingController();
-  final List<String> _addresses = ['Адрес 1', 'Адрес 2', 'Адрес 3']; // Список адресов
-
-  
 
   @override
   void initState() {
     super.initState();
   }
-
-  
 
   // Выбор времени самовывоза
   Future<void> _selectPickupTime(BuildContext context) async {
@@ -67,10 +60,10 @@ class _CheckoutScreenPickUpState extends State<CheckoutScreenPickUp> {
                   border: OutlineInputBorder(),
                 ),
                 value: _selectedAddress,
-                items: _addresses.map((String address) {
+                items: listOfAdressesForPickUp.map((addressMap) {
                   return DropdownMenuItem<String>(
-                    value: address,
-                    child: Text(address),
+                    value: addressMap["address"], // используем значение ключа "address"
+                    child: Text(addressMap["address"]), // отображаем адрес
                   );
                 }).toList(),
                 onChanged: (String? newValue) {
@@ -80,7 +73,6 @@ class _CheckoutScreenPickUpState extends State<CheckoutScreenPickUp> {
                 },
               ),
               SizedBox(height: 20),
-
               // Блок "Время самовывоза"
               Text(
                 "Время самовывоза",

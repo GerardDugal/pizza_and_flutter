@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pizza_and_flutter/widget/menu/dishes.dart';
@@ -143,184 +145,222 @@ class _CheckoutScreenDelivState extends State<CheckoutScreenDeliv> {
     final cart = Provider.of<CartProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text("Оформление заказа"),
+        title: Text("Оформление заказа", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+        centerTitle: true
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Блок "Адрес доставки"
-              Text(
-                "Адрес доставки",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 10),
-              // Поля для ввода улицы и дома
-              Row(
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _streetController,
-                      decoration: InputDecoration(
-                        labelText: "Улица",
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
+                  // Блок "Адрес доставки"
+                  Text(
+                    "Адрес доставки",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(width: 10),
-                  Expanded(
-                    child: TextField(
-                      controller: _houseController,
-                      decoration: InputDecoration(
-                        labelText: "Дом",
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 10),
-
-              // Поля для квартиры, домофона и этажа
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _apartmentController,
-                      decoration: InputDecoration(
-                        labelText: "Квартира",
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  Expanded(
-                    child: TextField(
-                      controller: _intercomController,
-                      decoration: InputDecoration(
-                        labelText: "Домофон",
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  Expanded(
-                    child: TextField(
-                      controller: _floorController,
-                      decoration: InputDecoration(
-                        labelText: "Этаж",
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 20),
-
-              // Блок "Время самовывоза"
-              Text(
-                "Время доставки",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 10),
-              GestureDetector(
-                onTap: () => _selectPickupTime(context),
-                child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: Text(
-                    _selectedPickupTime == null
-                        ? "Выберите время"
-                        : DateFormat('HH:mm').format(
-                            DateTime(
-                              0,
-                              0,
-                              0,
-                              _selectedPickupTime!.hour,
-                              _selectedPickupTime!.minute,
-                            ),
+                  SizedBox(height: 10),
+                  // Поля для ввода улицы и дома
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _streetController,
+                          decoration: InputDecoration(
+                            labelText: "Улица",
+                            border: OutlineInputBorder(),
                           ),
-                    style: TextStyle(fontSize: 16),
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: TextField(
+                          controller: _houseController,
+                          decoration: InputDecoration(
+                            labelText: "Дом",
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
+                  SizedBox(height: 10),
+                  // Поля для квартиры, домофона и этажа
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _apartmentController,
+                          decoration: InputDecoration(
+                            labelText: "Квартира",
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: TextField(
+                          controller: _intercomController,
+                          decoration: InputDecoration(
+                            labelText: "Домофон",
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: TextField(
+                          controller: _floorController,
+                          decoration: InputDecoration(
+                            labelText: "Этаж",
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                    
+                  // Блок "Время самовывоза"
+                  Text(
+                    "Время доставки",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 10),
+                  GestureDetector(
+                    onTap: () => _selectPickupTime(context),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Text(
+                        _selectedPickupTime == null
+                            ? "Выберите время"
+                            : DateFormat('HH:mm').format(
+                                DateTime(
+                                  0,
+                                  0,
+                                  0,
+                                  _selectedPickupTime!.hour,
+                                  _selectedPickupTime!.minute,
+                                ),
+                              ),
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  // Блок "Комментарии"
+                  Text(
+                    "Комментарии",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 10),
+                  TextField(
+                    controller: _commentController,
+                    decoration: InputDecoration(
+                      labelText: "Комментарий",
+                      border: OutlineInputBorder(),
+                    ),
+                    maxLines: 3,
+                  ),
+                  SizedBox(height: 20),
+                  // Блок "Заказ"
+                  
+                ],
               ),
-              SizedBox(height: 20),
-
-              // Блок "Комментарии"
-              Text(
-                "Комментарии",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 10),
-              TextField(
-                controller: _commentController,
-                decoration: InputDecoration(
-                  labelText: "Комментарий",
-                  border: OutlineInputBorder(),
-                ),
-                maxLines: 3,
-              ),
-              SizedBox(height: 20),
-              // Блок "Заказ"
-              Container(
+            ),
+            Container(
+                width: double.infinity,
                 padding: EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
                   borderRadius: BorderRadius.circular(5),
+                  color: const Color.fromARGB(255, 243, 243, 243),
                 ),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Заказ",
+                    style: TextStyle(fontSize: 26, fontWeight: FontWeight.w700),
+                  ),
+                  SizedBox(height: 10),
+                  
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween, // Распределяем пространство
+                    children: [
+                      Text("Сумма"),
+                      Text("${cart.totalAmount().toString()} ₽", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                    ],
+                  ),
+              
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Скидка -${cart.discountPercent}%", style: TextStyle(color: Colors.red)),
+                      Text(" ${cart.calculatediscountInRublesTotal().toStringAsFixed(0)} ₽", 
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.red)),
+                    ],
+                  ),
+                  
+                  SizedBox(height: 10),
+                  
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Всего к оплате", style: TextStyle(fontSize: 21, fontWeight: FontWeight.w600,)),
+                      Text("${cart.calctotalToPay().toStringAsFixed(0)} ₽",
+                        style: TextStyle(fontSize: 28, fontWeight: FontWeight.w900, color: Colors.red)),
+                    ],
+                  ),
+                  
+                  SizedBox(height: 20),
+                ],
+              ),
+              ),
+            Container(
+              padding: EdgeInsets.all(20),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.black.withOpacity(0.1), // Цвет тени
+                      spreadRadius: 1, // Распространение тени
+                      blurRadius: 5, // Размытие тени
+                      offset: Offset(0, 3),
+                  )
+                ]
+              ),
+              child: ElevatedButton(
+                onPressed: () {
+                  _showPaymentOptions(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(3),
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
+                    Icon(Icons.shopping_cart, color: Colors.white),
+                    SizedBox(width: 8),
                     Text(
-                      "Заказ",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      "Оформить заказ",
+                      style: TextStyle(color: Colors.white),
                     ),
-                    SizedBox(height: 10),
-                    Text("Сумма ${cart.totalAmount().toString()} р"),
-                    Text("Скидка -${cart.discountPercent}% ${cart.calculatediscountInRublesTotal().toStringAsFixed(2)} р", 
-                    style: TextStyle(color: Colors.red)),
-                    SizedBox(height: 10),
-                    Text(
-                      "Всего к оплате ${cart.calctotalToPay().toStringAsFixed(2)} р",
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 20),
                   ],
                 ),
               ),
-              Container(
-                      padding: EdgeInsets.all(20),
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          _showPaymentOptions(context);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(3),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.shopping_cart, color: Colors.white),
-                            SizedBox(width: 8),
-                            Text(
-                              "Оформить заказ",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

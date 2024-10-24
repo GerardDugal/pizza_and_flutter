@@ -85,15 +85,13 @@ class Dishes extends StatelessWidget {
                       onPressed: () {
                         cart.minusItem(dish_name);
                       },
-                      child: Text(
-                        "-",
-                        style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w900), // Белый текст
-                      ),
+                      child: Icon(Icons.remove, color: Colors.white, size: 30),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red, // Красный фон кнопки
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8), // Небольшое закругление
                         ),
+                        padding: EdgeInsets.all(0)
                       ),
                     ),
                     Text("${cart.items[index].quantity}", style: TextStyle(fontSize: 20),), // Количество товара
@@ -101,15 +99,13 @@ class Dishes extends StatelessWidget {
                       onPressed: () {
                         cart.plusItem(dish_name);
                       },
-                      child: Text(
-                        "+",
-                        style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w900), // Белый текст
-                      ),
+                      child: Icon(Icons.add, color: Colors.white, size: 30),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red, // Красный фон кнопки
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8), // Небольшое закругление
                         ),
+                        padding: EdgeInsets.all(0)
                       ),
                     ),
                     ],
@@ -138,7 +134,7 @@ class Dishes extends StatelessWidget {
                         : cart.addItem(dish_name, price, weight, picture, description, "", []);
                     },
                     child: Text(
-                      "${price} р",
+                      "${price} ₽",
                       style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.w700, fontFamily: "Inter"), // Цвет текста
                     ),
                     style: ElevatedButton.styleFrom(

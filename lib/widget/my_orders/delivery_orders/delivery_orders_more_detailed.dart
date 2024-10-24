@@ -144,7 +144,7 @@ class OrderDishes extends StatelessWidget{
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildRow(dish_name, "$price р"),
+                  _buildRow(dish_name, "$price ₽"),
                   Text("$filling ${additional_filling.join(", ")}"),
                   Text("$quantity шт.")
                 ],

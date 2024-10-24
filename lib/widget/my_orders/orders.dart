@@ -4,7 +4,6 @@ import 'package:pizza_and_flutter/widget/menu/dishes.dart';
 const String time = "1:30"; // Время, в колторое заказ будет завершен, будет хранить в себе время, когда заказ оказался у пользователя
 const DetailedStatus detailedStatus = DetailedStatus.adopted; 
 
-
 enum Status {
   taketo,
   inprogress,
@@ -19,7 +18,6 @@ enum DetailedStatus {
   delivered,
   readyToGet
 }
-
 
 Map<DetailedStatus, Widget> DetailedStatusMap = {
   DetailedStatus.adopted : Center(
@@ -70,4 +68,3 @@ Map<Status, String> StatusMap =  {
   Status.completed : "ВЫПОЛНЕН В $time",
   Status.uncompleted : "НЕ ВЫПОЛНЕН"
 };
-

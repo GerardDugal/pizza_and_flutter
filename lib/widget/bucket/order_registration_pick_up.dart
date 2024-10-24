@@ -143,145 +143,183 @@ class _CheckoutScreenPickUpState extends State<CheckoutScreenPickUp> {
     final cart = Provider.of<CartProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text("Оформление заказа"),
+        title: Text("Оформление заказа", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+        centerTitle: true
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Блок "Адрес доставки"
-              Text(
-                "Адрес самовывоза",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 10),
-              // Поля для ввода улицы и дома
-              DropdownButtonFormField<String>(
-                decoration: InputDecoration(
-                  labelText: "Адрес компании",
-                  border: OutlineInputBorder(),
-                ),
-                value: _selectedAddress,
-                items: listOfAdressesForPickUp
-                    .map((addressMap) => addressMap["address"])
-                    .toSet() // преобразуем в Set для удаления дубликатов
-                    .map((uniqueAddress) {
-                  return DropdownMenuItem<String>(
-                    value: uniqueAddress,
-                    child: Text(uniqueAddress),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _selectedAddress = newValue;
-                  });
-                },
-              ),
-              SizedBox(height: 20),
-              // Блок "Время самовывоза"
-              Text(
-                "Время самовывоза",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 10),
-              GestureDetector(
-                onTap: () => _selectPickupTime(context),
-                child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(5),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Адрес самовывоза",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  child: Text(
-                    _selectedPickupTime == null
-                        ? "Выберите время"
-                        : DateFormat('HH:mm').format(
-                            DateTime(
-                              0,
-                              0,
-                              0,
-                              _selectedPickupTime!.hour,
-                              _selectedPickupTime!.minute,
-                            ),
-                          ),
-                    style: TextStyle(fontSize: 16),
+                  SizedBox(height: 10),
+                  DropdownButton<String>(
+                  isExpanded: true, // Это важно, чтобы dropdown занимал всю ширину
+                  hint: Text("Адрес компании"),
+                  value: _selectedAddress,
+                  items: listOfAdressesForPickUp
+                      .map((addressMap) => addressMap["address"])
+                      .toSet()
+                      .map((uniqueAddress) {
+                    return DropdownMenuItem<String>(
+                      value: uniqueAddress,
+                      child: Text(
+                        uniqueAddress,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _selectedAddress = newValue;
+                    });
+                  },
+                ),
+                  SizedBox(height: 20),
+                  // Блок "Время самовывоза"
+                  Text(
+                    "Время самовывоза",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                ),
-              ),
-              SizedBox(height: 20),
-
-              // Блок "Комментарии"
-              Text(
-                "Комментарии",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 10),
-              TextField(
-                controller: _commentController,
-                decoration: InputDecoration(
-                  labelText: "Комментарий",
-                  border: OutlineInputBorder(),
-                ),
-                maxLines: 3,
-              ),
-              SizedBox(height: 20),
-              // Блок "Заказ"
-              Container(
-                padding: EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Заказ",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 10),
-                    Text("Сумма ${cart.totalAmount().toString()} р"),
-                    Text("Скидка -${cart.discountPercent}% ${cart.calculatediscountInRublesTotal().toStringAsFixed(2)} р", 
-                    style: TextStyle(color: Colors.red)),
-                    SizedBox(height: 10),
-                    Text(
-                      "Всего к оплате ${cart.calctotalToPay().toStringAsFixed(2)} р",
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 20),
-                  ],
-                ),
-              ),
-              Container(
-                      padding: EdgeInsets.all(20),
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          _showPaymentOptions(context);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(3),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.shopping_cart, color: Colors.white),
-                            SizedBox(width: 8),
-                            Text(
-                              "Оформить заказ",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        ),
+                  SizedBox(height: 10),
+                  GestureDetector(
+                    onTap: () => _selectPickupTime(context),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Text(
+                        _selectedPickupTime == null
+                            ? "Выберите время"
+                            : DateFormat('HH:mm').format(
+                                DateTime(
+                                  0,
+                                  0,
+                                  0,
+                                  _selectedPickupTime!.hour,
+                                  _selectedPickupTime!.minute,
+                                ),
+                              ),
+                        style: TextStyle(fontSize: 16),
                       ),
                     ),
-            ],
-          ),
+                  ),
+                  SizedBox(height: 20),
+                    
+                  // Блок "Комментарии"
+                  Text(
+                    "Комментарии",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 10),
+                  TextField(
+                    controller: _commentController,
+                    decoration: InputDecoration(
+                      labelText: "Комментарий",
+                      border: OutlineInputBorder(),
+                    ),
+                    maxLines: 3,
+                  ),
+                  SizedBox(height: 20),
+                ],
+              ),
+            ),
+            Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: const Color.fromARGB(255, 243, 243, 243),
+                    ),
+                    child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Заказ",
+                        style: TextStyle(fontSize: 26, fontWeight: FontWeight.w700),
+                      ),
+                      SizedBox(height: 10),
+                      
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween, // Распределяем пространство
+                        children: [
+                          Text("Сумма"),
+                          Text("${cart.totalAmount().toString()} ₽", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                        ],
+                      ),
+                  
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("Скидка -${cart.discountPercent}%", style: TextStyle(color: Colors.red)),
+                          Text(" ${cart.calculatediscountInRublesTotal().toStringAsFixed(0)} ₽", 
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.red)),
+                        ],
+                      ),
+                      
+                      SizedBox(height: 10),
+                      
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("Всего к оплате", style: TextStyle(fontSize: 21, fontWeight: FontWeight.w600,)),
+                          Text("${cart.calctotalToPay().toStringAsFixed(0)} ₽",
+                            style: TextStyle(fontSize: 28, fontWeight: FontWeight.w900, color: Colors.red)),
+                        ],
+                      ),
+                      
+                      SizedBox(height: 20),
+                    ],
+                  ),
+                  ),
+                Container(
+                  padding: EdgeInsets.all(20),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.black.withOpacity(0.1), // Цвет тени
+                          spreadRadius: 1, // Распространение тени
+                          blurRadius: 5, // Размытие тени
+                          offset: Offset(0, 3),
+                      )
+                    ]
+                  ),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      _showPaymentOptions(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(3),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.shopping_cart, color: Colors.white),
+                        SizedBox(width: 8),
+                        Text(
+                          "Оформить заказ",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+          ],
         ),
       ),
     );

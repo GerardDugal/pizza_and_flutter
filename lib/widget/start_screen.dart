@@ -107,7 +107,7 @@ class _PanelsState extends State<Panel> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     final TypeOfOrder = Provider.of<CartProvider>(context);
-    
+
     return Center(
       child: InkWell(
         child: Container(
@@ -153,6 +153,8 @@ class _PanelsState extends State<Panel> {
             apiclient.addAddresses();
             apiclient.addDishes();
             TypeOfOrder.setTypeOfOrder(1);
+            final bucket = Provider.of<CartProvider>(context, listen: false);
+            bucket.clearCart();
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => Menu(TypeOfOrder: 1,)),
@@ -164,6 +166,8 @@ class _PanelsState extends State<Panel> {
             apiclient.addAddresses();
             apiclient.addDishes();
             TypeOfOrder.setTypeOfOrder(2);
+            final bucket = Provider.of<CartProvider>(context, listen: false);
+            bucket.clearCart();
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => Menu(TypeOfOrder: 2,)),

@@ -157,7 +157,7 @@ void _showAddressForDeliverySelectionModal(BuildContext context) {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              "Выберите адрес ресторана",
+              "Выберите адрес доставки",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),
@@ -204,7 +204,7 @@ void _showAddressForDeliverySelectionModal(BuildContext context) {
   AppBar appBarForDelivery(BuildContext context) { //appbar для доставки
     return AppBar(
       automaticallyImplyLeading: false,
-      title: Text(selectedAddressForPickUp),
+      title: Text(selectedAddressForDelivery),
       backgroundColor: const Color.fromARGB(255, 240, 240, 240),
       actions: [
         IconButton(

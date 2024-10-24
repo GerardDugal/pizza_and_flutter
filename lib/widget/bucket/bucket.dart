@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pizza_and_flutter/api_clients/api_client.dart';
 import 'package:pizza_and_flutter/widget/bucket/order_registration_delivery.dart';
 import 'package:pizza_and_flutter/widget/bucket/order_registration_pick_up.dart';
 import 'package:pizza_and_flutter/widget/menu/dishes.dart';
@@ -9,15 +10,35 @@ class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<CartProvider>(context);
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('В корзине ${cart.items.length} позиции на ${cart.totalToPay} Р'),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Spacer(),
+            Column(
+              children: [
+                Text('В корзине ${cart.items.length} позиции', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 19),),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('на ', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 19)),
+                    Text('${cart.totalAmount()} ₽', style: TextStyle(color: Colors.red, fontWeight: FontWeight.w700, fontSize: 19),),
+                  ],
+                ),
+              ],
+            ),
+            Spacer(flex: 2),
+          ],
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.white,
       ),
       body: cart.items.isEmpty
           ? const Center(child: Text("Корзина пуста"))
           : ListView.builder(
+            padding: EdgeInsets.only(top: 25),
               itemCount: cart.items.length,
               itemBuilder: (context, index) {
                 final item = cart.items[index];
@@ -144,7 +165,7 @@ class BucketMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     final cart = Provider.of<CartProvider>(context);
     final index = cart.items.indexWhere((item) => item.dish_name == dish_name);
-
+    final ApiClient apiClient = ApiClient();
     return Card(
       elevation: 0,
       color: Colors.white,
@@ -171,19 +192,19 @@ class BucketMenu extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildRow(dish_name, "$price р"),
-                  const Text("Арт. 13423424342"),
+                  const Text("Арт. 1234556"),
                   Text("$filling ${additional_filling.join(", ")}"),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _buildCounterButton(cart, "-", dish_name, () {
+                      _buildCounterButton(cart, Icon(Icons.remove, color: Colors.white, size: 30), dish_name, () {
                         cart.minusItem(dish_name);
                       }),
                       Text(
                         "${cart.items[index].quantity}",
-                        style: const TextStyle(fontSize: 18),
+                        style: const TextStyle(fontSize: 20),
                       ),
-                      _buildCounterButton(cart, "+", dish_name, () {
+                      _buildCounterButton(cart, Icon(Icons.add, color: Colors.white, size: 30), dish_name, () {
                         cart.plusItem(dish_name);
                       }),
                       IconButton(
@@ -222,19 +243,18 @@ class BucketMenu extends StatelessWidget {
     );
   }
 
-  Widget _buildCounterButton(CartProvider cart, String label, String dishName, VoidCallback onPressed) {
+    Widget _buildCounterButton(CartProvider cart, Icon icon, String dishName, VoidCallback onPressed) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.red,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
         ),
+        padding: EdgeInsets.all(0),
       ),
       onPressed: onPressed,
-      child: Text(
-        label,
-        style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w900),
-      ),
+      child: icon, // Используем переданную иконку вместо текста
     );
   }
+
 }

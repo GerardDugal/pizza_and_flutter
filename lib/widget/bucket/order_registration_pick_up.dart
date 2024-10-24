@@ -1,26 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pizza_and_flutter/widget/addresses/addresses.dart';
+import 'package:pizza_and_flutter/widget/menu/dishes.dart';
 import 'package:pizza_and_flutter/widget/menu/dishes_model.dart';
 import 'package:pizza_and_flutter/widget/my_orders/my_orders_main.dart';
 import 'package:pizza_and_flutter/widget/my_orders/orders.dart';
 import 'package:pizza_and_flutter/widget/my_orders/pickup_orders/pickup_orders.dart';
 import 'package:provider/provider.dart';
+import '../my_orders/delivery_orders/delivery_orders.dart'; // Для форматирования времени
 
 class CheckoutScreenPickUp extends StatefulWidget {
-
   @override
   _CheckoutScreenPickUpState createState() => _CheckoutScreenPickUpState();
 }
-class _CheckoutScreenPickUpState extends State<CheckoutScreenPickUp> {
-  String? _selectedAddress; // Выбранный адрес самовывоза
-  TimeOfDay? _selectedPickupTime; // Выбранное время самовывоза
-  final TextEditingController _commentController = TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
-  }
+class _CheckoutScreenPickUpState extends State<CheckoutScreenPickUp> {
+  final TextEditingController _commentController = TextEditingController();
+  TimeOfDay? _selectedPickupTime; // Выбранное время самовывоза
+  String? _selectedAddress;
+  bool _orderSubmitted = false;
 
   // Выбор времени самовывоза
   Future<void> _selectPickupTime(BuildContext context) async {
@@ -33,6 +31,111 @@ class _CheckoutScreenPickUpState extends State<CheckoutScreenPickUp> {
         _selectedPickupTime = picked;
       });
     }
+  }
+
+  // Показываем панель выбора оплаты
+  void _showPaymentOptions(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isDismissible: false, // Чтобы нельзя было закрыть свайпом
+      builder: (BuildContext bc) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter modalSetState) {
+            return _orderSubmitted
+                ? _buildOrderSuccessContent() // Показ галочки и сообщения об успехе
+                : _buildPaymentOptionsContent(modalSetState); // Показ вариантов оплаты
+          },
+        );
+      },
+    );
+  }
+
+  // Содержимое панели с вариантами оплаты
+  Widget _buildPaymentOptionsContent(StateSetter modalSetState) {
+    return Container(
+      height: 200,
+      padding: EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("Выберите способ оплаты", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          SizedBox(height: 10),
+          ListTile(
+            title: Text("Картой"),
+            leading: Radio(
+              value: 'card',
+              groupValue: 'payment',
+              onChanged: (value) {
+                modalSetState(() {
+                  _completeOrder(modalSetState); // Завершаем заказ при выборе оплаты картой
+                });
+              },
+            ),
+          ),
+          ListTile(
+            title: Text("Наличными"),
+            leading: Radio(
+              value: 'cash',
+              groupValue: 'payment',
+              onChanged: (value) {
+                modalSetState(() {
+                  _completeOrder(modalSetState); // Завершаем заказ при выборе оплаты наличными
+                });
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Содержимое после отправки заказа (галочка и сообщение)
+  Widget _buildOrderSuccessContent() {
+    return Container(
+      height: 800,
+      width: double.infinity,
+      padding: EdgeInsets.all(16),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.check_circle, color: Colors.red, size: 100),
+          SizedBox(height: 20),
+          Text("Ваш заказ отправлен на оформление", style: TextStyle(fontSize: 18)),
+        ],
+      ),
+    );
+  }
+
+  // Завершение заказа и обновление состояния
+  void _completeOrder(StateSetter modalSetState) {
+    final cart = Provider.of<CartProvider>(context, listen: false);
+
+    // Обновляем состояние для отображения успеха
+    setState(() {
+      _orderSubmitted = true;
+    });
+
+    // Добавляем заказ в список заказов только после успешной оплаты
+    final List<CartItem> ListOfDishes = List.from(cart.items);
+    ListOfPickUpOrders.add(PickUp(
+                    number: 1,
+                    price: cart.calctotalToPay(),
+                    date: DateFormat('dd.MM.yyyy').format(DateTime.now()),
+                    status: Status.inprogress,
+                    count_positions: cart.positionsAmount,
+                    detailedStatus: DetailedStatus.adopted,
+                    dishList: ListOfDishes,
+                    pickup_adress: _selectedAddress.toString(),
+                    pickup_time: _selectedPickupTime.toString(),));
+                    print("Оформить заказ");
+
+    // Очищаем корзину после успешного добавления заказа
+    cart.clearCart();
+
+    // Даем небольшую задержку перед закрытием модального окна
+    Future.delayed(Duration(seconds: 2), () {
+      Navigator.pop(context); // Закрываем модальное окно
+    });
   }
 
   @override
@@ -48,22 +151,26 @@ class _CheckoutScreenPickUpState extends State<CheckoutScreenPickUp> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Блок "Адрес самовывоза"
+              // Блок "Адрес доставки"
               Text(
                 "Адрес самовывоза",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 10),
+              // Поля для ввода улицы и дома
               DropdownButtonFormField<String>(
                 decoration: InputDecoration(
                   labelText: "Адрес компании",
                   border: OutlineInputBorder(),
                 ),
                 value: _selectedAddress,
-                items: listOfAdressesForPickUp.map((addressMap) {
+                items: listOfAdressesForPickUp
+                    .map((addressMap) => addressMap["address"])
+                    .toSet() // преобразуем в Set для удаления дубликатов
+                    .map((uniqueAddress) {
                   return DropdownMenuItem<String>(
-                    value: addressMap["address"], // используем значение ключа "address"
-                    child: Text(addressMap["address"]), // отображаем адрес
+                    value: uniqueAddress,
+                    child: Text(uniqueAddress),
                   );
                 }).toList(),
                 onChanged: (String? newValue) {
@@ -120,13 +227,7 @@ class _CheckoutScreenPickUpState extends State<CheckoutScreenPickUp> {
                 maxLines: 3,
               ),
               SizedBox(height: 20),
-
               // Блок "Заказ"
-              Text(
-                "Заказ",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 10),
               Container(
                 padding: EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -136,36 +237,49 @@ class _CheckoutScreenPickUpState extends State<CheckoutScreenPickUp> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Сумма заказа: ${cart.totalAmount().toString()} р"),
-                    Text("Скидка: ${cart.discountPercent}% (${cart.calculatediscountInRublesTotal().toStringAsFixed(2)} р)"),
-                    SizedBox(height: 10),
                     Text(
-                      "Всего к оплате: ${cart.calctotalToPay().toStringAsFixed(2)} р",
+                      "Заказ",
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
+                    SizedBox(height: 10),
+                    Text("Сумма ${cart.totalAmount().toString()} р"),
+                    Text("Скидка -${cart.discountPercent}% ${cart.calculatediscountInRublesTotal().toStringAsFixed(2)} р", 
+                    style: TextStyle(color: Colors.red)),
+                    SizedBox(height: 10),
+                    Text(
+                      "Всего к оплате ${cart.calctotalToPay().toStringAsFixed(2)} р",
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 20),
                   ],
                 ),
               ),
-              SizedBox(height: 20),
-              // Кнопка "Оформить заказ"
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    ListOfsDelivOrders.add(PickUp(number: 1,
-                    price: cart.calctotalToPay(),
-                    date: DateFormat('dd.MM.yyyy').format(DateTime.now()),
-                    status: Status.inprogress,
-                    count_positions: cart.positionsAmount,
-                    detailedStatus: DetailedStatus.adopted,
-                    dishList: cart.items,
-                    pickup_adress: _selectedAddress.toString(),
-                    pickup_time: _selectedPickupTime.toString(),));
-                    print("Оформить заказ");
-                  },
-                  child: Text("Оформить заказ"),
-                ),
-              ),
+              Container(
+                      padding: EdgeInsets.all(20),
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          _showPaymentOptions(context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(3),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.shopping_cart, color: Colors.white),
+                            SizedBox(width: 8),
+                            Text(
+                              "Оформить заказ",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
             ],
           ),
         ),
@@ -173,3 +287,10 @@ class _CheckoutScreenPickUpState extends State<CheckoutScreenPickUp> {
     );
   }
 }
+
+
+
+
+
+
+

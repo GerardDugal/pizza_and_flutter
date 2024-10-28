@@ -1,15 +1,19 @@
 import 'dart:convert'; // Для работы с JSON
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:pizza_and_flutter/domain/entity/addressesdata.dart';
 import 'package:pizza_and_flutter/domain/entity/post.dart';
 import 'package:pizza_and_flutter/widget/addresses/addresses.dart';
 import 'package:pizza_and_flutter/widget/menu/dishes.dart';
+import 'package:pizza_and_flutter/widget/menu/dishes_model.dart';
 import 'package:pizza_and_flutter/widget/menu/menu.dart';
+import 'package:pizza_and_flutter/widget/menu/menu_main.dart';
+import 'package:provider/provider.dart';
 
 class ApiClient {
   final int limit; // Максимальное количество позиций для парсинга
   int _restaurant = 0;
-
+  
   void setRestaurant(int restaurant) {
     _restaurant = restaurant;
   } // Получаем id текущего ресторана для определения меню
@@ -73,10 +77,10 @@ class ApiClient {
     }
   }
 
-
   Future<void> addDishes() async {
     final post = await getPosts();
     bool adressIsExist = false;
+    // final loadingState = Provider.of<CartProvider>(context, listen: false);
 
     Map<String, dynamic>? getCategoryById(int id) {
       return categorizedMenu.firstWhere(
@@ -113,6 +117,9 @@ class ApiClient {
       }
       else{print("Элемент не должен отображаться в меню");}
     }
+    // if (context.mounted) {
+    //   loadingState.setLoading(false);
+    // }
   }
 }
 

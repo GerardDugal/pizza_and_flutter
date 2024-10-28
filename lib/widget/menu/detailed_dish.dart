@@ -221,44 +221,59 @@ class _DishDetailScreenState extends State<DishDetailScreen> {
                   // Количество товара (+ и - кнопки)
                   Row(
                     children: [
-                      IconButton(
-                        onPressed: quantity > 1
-                            ? () {
-                                cart.minusItem(widget.dishName);
-                                setState(() {
-                                  quantity--;
-                                });
-                              }
-                            : null,
-                        icon: Icon(
-                          Icons.remove,
-                          color: quantity > 1 ? Colors.black : Colors.grey,
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: quantity > 1 ? Colors.black54 : Colors.grey,), // Цвет рамки
+                          borderRadius: BorderRadius.circular(8), // Радиус закругления
+                        ),
+                        child: IconButton(
+                          onPressed: quantity > 1
+                              ? () {
+                                  cart.minusItem(widget.dishName);
+                                  setState(() {
+                                    quantity--;
+                                  });
+                                }
+                              : null,
+                          icon: Icon(
+                            Icons.remove,
+                            color: quantity > 1 ? Colors.black : Colors.grey,
+                          ),
                         ),
                       ),
+                      SizedBox(width: 20),
                       Text(quantity.toString(), style: TextStyle(fontSize: 20)),
-                      IconButton(
-                        onPressed: quantity == 1 ? () {
-                          cart.addItem(
-                        widget.dishName,
-                        calculateTotalPrice(),
-                        widget.weight,
-                        widget.image,
-                        widget.description,
-                        selectedFilling!,
-                        selectedAdditionalFillings,
-                      );
-                          setState(() {
-                            quantity++;
-                          });
-                        } : 
-                        () {
-                          cart.plusItem(widget.dishName);
-                          setState(() {
-                            quantity++;
-                          });
-                        },
-                        icon: Icon(Icons.add),
-                      ),
+                      SizedBox(width: 20),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black54), // Цвет рамки
+                          borderRadius: BorderRadius.circular(8), // Радиус закругления
+                        ),
+                        child: IconButton(
+                          onPressed: quantity == 1
+                              ? () {
+                                  cart.addItem(
+                                    widget.dishName,
+                                    calculateTotalPrice(),
+                                    widget.weight,
+                                    widget.image,
+                                    widget.description,
+                                    selectedFilling!,
+                                    selectedAdditionalFillings,
+                                  );
+                                  setState(() {
+                                    quantity++;
+                                  });
+                                }
+                              : () {
+                                  cart.plusItem(widget.dishName);
+                                  setState(() {
+                                    quantity++;
+                                  });
+                                },
+                          icon: Icon(Icons.add),
+                        ),
+                      )
                     ],
                   ),
                   // Кнопка "Добавить"

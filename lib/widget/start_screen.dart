@@ -148,26 +148,24 @@ class _PanelsState extends State<Panel> {
             );
           }
           if (widget.name == "Доставка") {
-            final apiclient = ApiClient();
+            // final apiclient = ApiClient();
             // apiclient.createAdresses();
-            apiclient.addAddresses();
-            apiclient.addDishes();
+            // apiclient.addAddresses();
+            // apiclient.addDishes(context);
             TypeOfOrder.setTypeOfOrder(1);
-            final bucket = Provider.of<CartProvider>(context, listen: false);
-            bucket.clearCart();
+            TypeOfOrder.clearCart();
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => Menu(TypeOfOrder: 1,)),
             );
           }
           if (widget.name == "Самовывоз") {
-            final apiclient = ApiClient();
+            // final apiclient = ApiClient();
             // apiclient.createAdresses();
-            apiclient.addAddresses();
-            apiclient.addDishes();
+            // apiclient.addAddresses();
+            // apiclient.addDishes(context);
             TypeOfOrder.setTypeOfOrder(2);
-            final bucket = Provider.of<CartProvider>(context, listen: false);
-            bucket.clearCart();
+            TypeOfOrder.clearCart();
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => Menu(TypeOfOrder: 2,)),

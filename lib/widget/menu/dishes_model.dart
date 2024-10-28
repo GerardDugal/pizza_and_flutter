@@ -34,18 +34,28 @@ class CartProvider with ChangeNotifier {
   double discountInRubles = 0.0; // Скидка в рублях
   double totalToPay = 0.0; // Всего к оплате
   int _TypeOfOrder = 0;
-  String _AddressForPickUp = "Выберете адрес ресторана";
+  String _AddressForPickUp = "Выберете адрес ресторана"; 
+  // bool _isLoading = true;
 
   List<CartItem> get items => _items;
 
+  // void setLoading(isLoading){
+  //   _isLoading = isLoading;
+  //   notifyListeners();
+  // }
+
+  // bool get isLoading => _isLoading;
+
   void setTypeOfOrder(TypeOfOrder){
     _TypeOfOrder = TypeOfOrder;
+    notifyListeners();
   }
 
   int get TypeOfOrder => _TypeOfOrder;
 
   void setAddressForPickUp(AddressForPickUp){
     _AddressForPickUp = AddressForPickUp;
+    notifyListeners();
   }
 
   String get AddressForPickUp => _AddressForPickUp;

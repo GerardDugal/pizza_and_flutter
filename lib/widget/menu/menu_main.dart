@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pizza_and_flutter/api_clients/api_client.dart';
+import 'package:pizza_and_flutter/textstyle.dart';
 import 'package:pizza_and_flutter/widget/addresses/addresses.dart';
 import 'package:pizza_and_flutter/widget/bucket/bucket.dart';
 import 'package:pizza_and_flutter/widget/menu/dishes.dart';
@@ -109,6 +110,9 @@ class _MenuState extends State<Menu> {
           context,
           MaterialPageRoute(builder: (context) => CartScreen()),
         );
+        setState(() {
+      _selectedIndex = 1;
+      });
         break;
     }
   }
@@ -141,7 +145,7 @@ void _showAddressForPickUpSelectionModal(BuildContext context){
             padding: const EdgeInsets.all(8.0),
             child: Text(
               "Выберите адрес ресторана",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyles.TitleInMenuDelivery
             ),
           ),
           Expanded(
@@ -174,21 +178,6 @@ void _showAddressForPickUpSelectionModal(BuildContext context){
   );
 }
 
-
-// void _updateSelectedAddress(Map<String, dynamic> selectedAddress) async {
-//   setState(() {
-//     selectedAddressForPickUp = selectedAddress['address'];
-//   });
-  
-//   apicontroller.setRestaurant(selectedAddress['id']);
-//   clearMenu();
-//   await apicontroller.addDishes();
-  
-//   final AddressForPickUp = Provider.of<CartProvider>(context, listen: false);
-//   AddressForPickUp.setAddressForPickUp(selectedAddressForPickUp);
-// }
-
-
 void _showAddressForDeliverySelectionModal(BuildContext context) {
   showModalBottomSheet(
     context: context,
@@ -200,7 +189,7 @@ void _showAddressForDeliverySelectionModal(BuildContext context) {
             padding: const EdgeInsets.all(8.0),
             child: Text(
               "Выберите адрес доставки",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyles.TitleInMenuPickUp,
             ),
           ),
           // Добавляем Expanded для скроллинга списка

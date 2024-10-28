@@ -5,6 +5,7 @@ import 'package:pizza_and_flutter/widget/bucket/order_registration_pick_up.dart'
 import 'package:pizza_and_flutter/widget/menu/dishes.dart';
 import 'package:pizza_and_flutter/widget/menu/dishes_model.dart';
 import 'package:provider/provider.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class CartScreen extends StatelessWidget {
   @override
@@ -165,7 +166,6 @@ class BucketMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     final cart = Provider.of<CartProvider>(context);
     final index = cart.items.indexWhere((item) => item.dish_name == dish_name);
-    final ApiClient apiClient = ApiClient();
     return Card(
       elevation: 0,
       color: Colors.white,
@@ -197,18 +197,26 @@ class BucketMenu extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _buildCounterButton(cart, Icon(Icons.remove, color: Colors.white, size: 30), dish_name, () {
-                        cart.minusItem(dish_name);
-                      }),
+                      SizedBox(
+                        width: 50,
+                        height: 50,
+                        child: _buildCounterButton(cart, Icon(Icons.remove, color: Colors.white, size: 30), dish_name, () {
+                          cart.minusItem(dish_name);
+                        }),
+                      ),
                       Text(
                         "${cart.items[index].quantity}",
                         style: const TextStyle(fontSize: 20),
                       ),
-                      _buildCounterButton(cart, Icon(Icons.add, color: Colors.white, size: 30), dish_name, () {
-                        cart.plusItem(dish_name);
-                      }),
+                      SizedBox(
+                        width: 50,
+                        height: 50,
+                        child: _buildCounterButton(cart, Icon(Icons.add, color: Colors.white, size: 30), dish_name, () {
+                          cart.plusItem(dish_name);
+                        }),
+                      ),
                       IconButton(
-                        icon: const Icon(Icons.delete_forever, color: Colors.black, size: 30),
+                        icon: const Icon(HugeIcons.strokeRoundedDelete02, color: Color.fromARGB(255, 92, 92, 92), size: 28),
                         onPressed: () {
                           cart.removeItem(dish_name);
                         },

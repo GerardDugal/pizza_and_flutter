@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:pizza_and_flutter/api_clients/api_client.dart';
+import 'package:pizza_and_flutter/textstyle.dart';
 import 'package:pizza_and_flutter/widget/menu/dishes.dart';
 import 'package:pizza_and_flutter/widget/menu/dishes_model.dart';
 import 'package:pizza_and_flutter/widget/menu/menu_main.dart';
@@ -79,7 +80,7 @@ class AboutUs extends StatelessWidget {
             margin: EdgeInsets.only(left: 15),
             child: Text(
               "О нас",
-              style: TextStyle(color: Colors.white, fontSize: 60, fontWeight: FontWeight.w700),
+              style: TextStyles.AboutUs,
             ),
           )
         ],
@@ -160,10 +161,6 @@ class _PanelsState extends State<Panel> {
             );
           }
           if (widget.name == "Самовывоз") {
-            // final apiclient = ApiClient();
-            // apiclient.createAdresses();
-            // apiclient.addAddresses();
-            // apiclient.addDishes(context);
             TypeOfOrder.setTypeOfOrder(2);
             TypeOfOrder.clearCart();
             Navigator.push(

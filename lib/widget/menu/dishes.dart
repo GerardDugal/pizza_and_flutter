@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pizza_and_flutter/api_clients/api_client.dart';
+import 'package:pizza_and_flutter/textstyle.dart';
 import 'package:pizza_and_flutter/widget/menu/detailed_dish.dart';
 import 'package:pizza_and_flutter/widget/menu/dishes_model.dart';
 import 'package:pizza_and_flutter/widget/menu/menu.dart';
@@ -72,8 +73,8 @@ class Dishes extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(dish_name, style: TextStyle(fontFamily: "Inter", fontSize: 16, fontWeight: FontWeight.w500)),
-                    Text("${weight.toString()} г", style: TextStyle(fontFamily: "Inter", fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black45)),
+                    Text(dish_name, style: TextStyles.DishName),
+                    Text("${weight.toString()} г", style: TextStyles.DishWeight),
                   ],
                 ),
                 // SizedBox(height: 20),
@@ -81,31 +82,39 @@ class Dishes extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      ElevatedButton(
-                      onPressed: () {
-                        cart.minusItem(dish_name);
-                      },
-                      child: Icon(Icons.remove, color: Colors.white, size: 30),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red, // Красный фон кнопки
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8), // Небольшое закругление
+                      SizedBox(
+                        width: 50,
+                        height: 50,
+                        child: ElevatedButton(
+                        onPressed: () {
+                          cart.minusItem(dish_name);
+                        },
+                        child: Icon(Icons.remove, color: Colors.white, size: 30),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red, // Красный фон кнопки
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8), // Небольшое закругление
+                          ),
+                          padding: EdgeInsets.all(0)
                         ),
-                        padding: EdgeInsets.all(0)
+                                            ),
                       ),
-                    ),
-                    Text("${cart.items[index].quantity}", style: TextStyle(fontSize: 20),), // Количество товара
-                    ElevatedButton(
-                      onPressed: () {
-                        cart.plusItem(dish_name);
-                      },
-                      child: Icon(Icons.add, color: Colors.white, size: 30),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red, // Красный фон кнопки
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8), // Небольшое закругление
+                    Text("${cart.items[index].quantity}", style: TextStyle(fontSize: 25),), // Количество товара
+                    SizedBox(
+                      width: 50,
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          cart.plusItem(dish_name);
+                        },
+                        child: Icon(Icons.add, color: Colors.white, size: 30),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red, // Красный фон кнопки
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8), // Небольшое закругление
+                          ),
+                          padding: EdgeInsets.all(0)
                         ),
-                        padding: EdgeInsets.all(0)
                       ),
                     ),
                     ],

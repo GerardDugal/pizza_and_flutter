@@ -112,8 +112,12 @@ class ApiClient {
       final description = position.descr;
       if (position.deleted == false && position.address_id == _restaurant)
       {
-        if(!listOfAdditionalMenuId.contains(position.menu_cat_id)){
-        getCategoryById(position.menu_cat_id)!['items'].add(Dishes(dish_name: dish_name, price: price![0], weight: weight, picture: picture, description: description,));}
+        if(!listOfAdditionalMenuId.contains(position.menu_cat_id) && position.menu_cat_id == 10659){
+        getCategoryById(position.menu_cat_id)!['items'].add(Dishes(dish_name: dish_name, price: price![0], weight: weight, picture: picture, description: description,));
+        }
+        if(!listOfAdditionalMenuId.contains(position.menu_cat_id) && position.menu_cat_id != 10659){
+        getCategoryById(position.menu_cat_id)!['items'].add(Dishes(dish_name: dish_name, price: price![0], weight: weight, picture: picture, description: description, with_fillings: false,));
+        }
       }
       else{print("Элемент не должен отображаться в меню");}
     }

@@ -121,61 +121,146 @@ class _CheckoutScreenPickUpState extends State<CheckoutScreenPickUp> {
     );
   }
 
-  // Содержимое панели с вариантами оплаты
-  Widget _buildPaymentOptionsContent(StateSetter modalSetState) {
-    return Container(
-      height: 200,
-      padding: EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("Выберите способ оплаты", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          SizedBox(height: 10),
-          ListTile(
-            title: Text("Картой"),
-            leading: Radio(
-              value: 'card',
-              groupValue: 'payment',
-              onChanged: (value) {
-                modalSetState(() {
-                  _completeOrder(modalSetState); // Завершаем заказ при выборе оплаты картой
-                });
-              },
+// Содержимое панели с вариантами оплаты
+Widget _buildPaymentOptionsContent(StateSetter modalSetState) {
+  return Container(
+    height: 230,
+    padding: EdgeInsets.all(16),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          "Выберите способ оплаты",
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          textAlign: TextAlign.center,
+        ),
+        SizedBox(height: 20),
+        // Кнопка оплаты картой
+        GestureDetector(
+          onTap: () {
+            modalSetState(() {
+              _completeOrder(modalSetState); // Завершаем заказ при выборе оплаты картой
+            });
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 15),
+            decoration: BoxDecoration(
+              color: Colors.grey[200], // Светлый фон
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.credit_card, color: Colors.grey[800]),
+                SizedBox(width: 10),
+                Text(
+                  "Картой",
+                  style: TextStyle(color: Colors.grey[800], fontSize: 16),
+                ),
+              ],
             ),
           ),
-          ListTile(
-            title: Text("Наличными"),
-            leading: Radio(
-              value: 'cash',
-              groupValue: 'payment',
-              onChanged: (value) {
-                modalSetState(() {
-                  _completeOrder(modalSetState); // Завершаем заказ при выборе оплаты наличными
-                });
-              },
+        ),
+        SizedBox(height: 15),
+        // Кнопка оплаты наличными
+        GestureDetector(
+          onTap: () {
+            modalSetState(() {
+              _completeOrder(modalSetState); // Завершаем заказ при выборе оплаты наличными
+            });
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 15),
+            decoration: BoxDecoration(
+              color: Colors.grey[200], // Светлый фон
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.account_balance_wallet, color: Colors.grey[800]),
+                SizedBox(width: 10),
+                Text(
+                  "Наличными",
+                  style: TextStyle(color: Colors.grey[800], fontSize: 16),
+                ),
+              ],
             ),
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
+}
 
-  // Содержимое после отправки заказа (галочка и сообщение)
-  Widget _buildOrderSuccessContent() {
-    return Container(
-      height: 800,
-      width: double.infinity,
-      padding: EdgeInsets.all(16),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.check_circle, color: Colors.red, size: 100),
-          SizedBox(height: 20),
-          Text("Ваш заказ отправлен на оформление", style: TextStyle(fontSize: 18)),
-        ],
-      ),
-    );
-  }
+
+
+// Содержимое после отправки заказа (галочка и сообщение)
+Widget _buildOrderSuccessContent() {
+  return Container(
+    height: 800,
+    width: double.infinity,
+    padding: EdgeInsets.all(16),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(children: [
+          Container(
+          padding: EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.red, width: 3),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(Icons.check, color: Colors.red, size: 60),
+        ),
+        SizedBox(height: 20),
+        Text(
+          "СТАТУС ЗАКАЗА",
+          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey[600]),
+        ),
+        SizedBox(height: 10),
+        Text(
+          "Ваш заказ отправлен на оформление!",
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.black),
+        ),
+        SizedBox(height: 30),]),
+        ElevatedButton(
+          onPressed: () {
+            Navigator.pop(context);
+            Navigator.pop(context); // Закрываем модальное окно
+          },
+          style: ElevatedButton.styleFrom(
+            padding: EdgeInsets.zero, // Убираем стандартные отступы ElevatedButton
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            backgroundColor: Colors.transparent, // Прозрачный фон для ElevatedButton
+            shadowColor: Colors.transparent, // Убираем тень кнопки
+          ),
+          child: Container(
+            alignment: Alignment.center,
+            padding: EdgeInsets.symmetric(vertical: 15),
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: Colors.grey[200], // Светлый фон кнопки
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Text(
+              "Понятно",
+              style: TextStyle(
+                color: Colors.black, // Темный цвет текста
+                fontSize: 16,
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+          ),
+        )
+      ],
+    ),
+  );
+}
+
 
   // Завершение заказа и обновление состояния
   void _completeOrder(StateSetter modalSetState) {
@@ -199,10 +284,6 @@ class _CheckoutScreenPickUpState extends State<CheckoutScreenPickUp> {
     ));
 
     cart.clearCart();
-
-    Future.delayed(Duration(seconds: 2), () {
-      Navigator.pop(context); // Закрываем модальное окно
-    });
   }
 
   @override

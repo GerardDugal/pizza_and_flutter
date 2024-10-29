@@ -35,7 +35,6 @@ class _MenuState extends State<Menu> {
   @override
   void initState() {
     super.initState();
-    apicontroller.addAddresses();
     // apicontroller.addDishes();
     _dishesFuture = apicontroller.addDishes(); // Сохраняем Future для единственного использования
     // Добавляем слушатель для скролла

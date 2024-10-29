@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pizza_and_flutter/api_clients/api_client.dart';
 import 'package:pizza_and_flutter/widget/menu/dishes.dart';
 import 'package:pizza_and_flutter/widget/menu/dishes_model.dart';
 import 'package:pizza_and_flutter/widget/start_screen.dart';
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ApiClient().addAddresses();
     return MaterialApp(
       theme: ThemeData(
     fontFamily: 'Inter',

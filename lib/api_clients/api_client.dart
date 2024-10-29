@@ -43,7 +43,7 @@ class ApiClient {
   Future<void> addAddresses() async {
     final allAddresses = await getAdresses();
     for (var address in allAddresses.addresses) {
-      listOfAdressesForPickUp.add({"id" : address.id, "address" : address.address});
+      if(address.deleted == false){ listOfAdressesForPickUp.add({"id" : address.id, "address" : address.address});}
     }
     print(listOfAdressesForPickUp);
   }
@@ -80,6 +80,7 @@ class ApiClient {
   Future<void> addDishes() async {
     final post = await getPosts();
     bool adressIsExist = false;
+    List<int> existingRest = [];
     // final loadingState = Provider.of<CartProvider>(context, listen: false);
 
     Map<String, dynamic>? getCategoryById(int id) {
@@ -96,6 +97,12 @@ class ApiClient {
     }
 
     if(!adressIsExist){setRestaurant(0);}
+
+    for (var position in post.positions) {
+      if(position.address_id == _restaurant && position.deleted == false) {existingRest.add(1); break;} 
+    }
+
+    if(existingRest.isEmpty){setRestaurant(0);}
 
     for (var addingPosition in post.positions) {
           if (addingPosition.deleted == false && addingPosition.address_id == _restaurant)
@@ -121,9 +128,6 @@ class ApiClient {
       }
       else{print("Элемент не должен отображаться в меню");}
     }
-    // if (context.mounted) {
-    //   loadingState.setLoading(false);
-    // }
   }
 }
 

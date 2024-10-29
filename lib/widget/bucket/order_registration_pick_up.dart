@@ -7,6 +7,7 @@ import 'package:pizza_and_flutter/widget/menu/dishes.dart';
 import 'package:pizza_and_flutter/widget/menu/dishes_model.dart';
 import 'package:pizza_and_flutter/widget/my_orders/my_orders_main.dart';
 import 'package:pizza_and_flutter/widget/my_orders/orders.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:pizza_and_flutter/widget/my_orders/pickup_orders/pickup_orders.dart';
 import '../my_orders/delivery_orders/delivery_orders.dart'; // Для форматирования времени
 
@@ -25,84 +26,86 @@ class _CheckoutScreenPickUpState extends State<CheckoutScreenPickUp> {
   List<String> timeSlots = List.generate(24, (index) => '${index.toString().padLeft(2, '0')}:00');
 
   // Выбор даты и времени самовывоза
-  Future<void> _selectPickupDateTime(BuildContext context) async {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        DateTime tempSelectedDate = DateTime.now();
-        String tempSelectedTime = timeSlots[0];
+Future<void> _selectPickupDateTime(BuildContext context) async {
+  await initializeDateFormatting('ru', null); // Инициализация данных для русского языка
+  showModalBottomSheet(
+    context: context,
+    builder: (BuildContext context) {
+      DateTime tempSelectedDate = DateTime.now();
+      String tempSelectedTime = timeSlots[0];
+      return Container(
+        height: 350,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(25, 15, 15, 15),
+              child: Text(
+                "ДАТА И ВРЕМЯ ПОЛУЧЕНИЯ",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
+              ),
+            ),
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  // Выбор даты
+                  Expanded(
+                    child: CupertinoPicker(
+                      itemExtent: 40,
+                      onSelectedItemChanged: (index) {
+                        tempSelectedDate = DateTime.now().add(Duration(days: index));
+                      },
+                      children: List<Widget>.generate(30, (index) {
+                        DateTime date = DateTime.now().add(Duration(days: index));
+                        return Center(
+                          child: Text(DateFormat('E, MMM d', 'ru').format(date)),
+                        );
+                      }),
+                    ),
+                  ),
+                  // Выбор времени
+                  Expanded(
+                    child: CupertinoPicker(
+                      itemExtent: 40,
+                      onSelectedItemChanged: (index) {
+                        tempSelectedTime = timeSlots[index];
+                      },
+                      children: timeSlots.map((time) => Center(child: Text(time))).toList(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // Кнопка "Готово"
+            Container(
+              padding: EdgeInsets.all(15),
+              width: double.infinity,
+              child: CupertinoButton(
+                color: Colors.red,
+                onPressed: () {
+                  setState(() {
+                    _selectedPickupDateTime = DateTime(
+                      tempSelectedDate.year,
+                      tempSelectedDate.month,
+                      tempSelectedDate.day,
+                      int.parse(tempSelectedTime.split(":")[0]),
+                    );
+                  });
+                  Navigator.pop(context);
+                },
+                child: Text('Готово', style: TextStyle(color: Colors.white)),
+              ),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
 
-        return Container(
-          height: 350,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(25, 15, 15, 15),
-                child: Text("ДАТА И ВРЕМЯ ПОЛУЧЕНИЯ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800), ),
-              ),
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    // Выбор даты
-                    Expanded(
-                      child: CupertinoPicker(
-                        itemExtent: 40,
-                        onSelectedItemChanged: (index) {
-                          tempSelectedDate = DateTime.now().add(Duration(days: index));
-                        },
-                        children: List<Widget>.generate(30, (index) {
-                          DateTime date = DateTime.now().add(Duration(days: index));
-                          return Center(
-                            child: Text(DateFormat('E, MMM d').format(date)),
-                          );
-                        }),
-                      ),
-                    ),
-                    // Выбор времени
-                    Expanded(
-                      child: CupertinoPicker(
-                        itemExtent: 40,
-                        onSelectedItemChanged: (index) {
-                          tempSelectedTime = timeSlots[index];
-                        },
-                        children: timeSlots.map((time) => Center(child: Text(time))).toList(),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              // Кнопка "Готово"
-              Container(
-                padding: EdgeInsets.all(15),
-                width: double.infinity,
-                child: CupertinoButton(
-                  color: Colors.red,
-                  onPressed: () {
-                    setState(() {
-                      _selectedPickupDateTime = DateTime(
-                        tempSelectedDate.year,
-                        tempSelectedDate.month,
-                        tempSelectedDate.day,
-                        int.parse(tempSelectedTime.split(":")[0]),
-                      );
-                    });
-                    Navigator.pop(context);
-                  },
-                  child: Text('Готово', style: TextStyle(color: Colors.white)),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
 
   // Показываем панель выбора оплаты
   void _showPaymentOptions(BuildContext context) {
@@ -338,7 +341,7 @@ Widget _buildOrderSuccessContent() {
                       child: Text(
                         _selectedPickupDateTime == null
                             ? "Выберите дату и время"
-                            : DateFormat('E, MMM d, HH:mm').format(_selectedPickupDateTime!),
+                            : DateFormat('E, MMM d, HH:mm', 'ru').format(_selectedPickupDateTime!),
                         style: TextStyle(fontSize: 16),
                       ),
                     ),

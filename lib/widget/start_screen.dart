@@ -108,7 +108,6 @@ class _PanelsState extends State<Panel> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     final TypeOfOrder = Provider.of<CartProvider>(context);
-
     return Center(
       child: InkWell(
         child: Container(

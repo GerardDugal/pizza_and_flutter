@@ -11,16 +11,16 @@ import 'package:provider/provider.dart';
 
 class Menu extends StatefulWidget {
   final int TypeOfOrder;
-  
+  String selectedAddressForPickUp;
 
-  const Menu({super.key, required this.TypeOfOrder});
+  Menu({super.key, required this.TypeOfOrder, this.selectedAddressForPickUp = "Выберите адрес доставки"} );
   @override
   _MenuState createState() => _MenuState();
 }
 
 class _MenuState extends State<Menu> {
   final ApiClient apicontroller = ApiClient();
-  String selectedAddressForPickUp = "Выберите адрес ресторана";
+  
   String selectedAddressForDelivery = "Выберите адрес доставки";
   int _selectedIndex = 1;
   int _highlightedCategoryIndex = 0;
@@ -127,7 +127,7 @@ void _showAddressForPickUpSelectionModal(BuildContext context){
   showModalBottomSheet(
     context: context,
     builder: (BuildContext context) {
-      final addressProvider = Provider.of<CartProvider>(context, listen: false); // Получаем провайдер
+      // final addressProvider = Provider.of<CartProvider>(context, listen: false); // Получаем провайдер
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -147,8 +147,8 @@ void _showAddressForPickUpSelectionModal(BuildContext context){
                   title: Text(listOfAdressesForPickUp[index]['address']),
                   onTap: () async {
                     // Устанавливаем адрес в провайдере
-                    addressProvider.setAddressForPickUp(listOfAdressesForPickUp[index]['address']);
-                    selectedAddressForPickUp = listOfAdressesForPickUp[index]['address'];
+                    // addressProvider.setAddressForPickUp(listOfAdressesForPickUp[index]['address']);
+                    widget.selectedAddressForPickUp = listOfAdressesForPickUp[index]['address'];
                     // Вызываем другие методы, если нужно
                     apicontroller.setRestaurant(listOfAdressesForPickUp[index]['id']);
                     clearMenu();
@@ -209,7 +209,7 @@ void _showAddressForDeliverySelectionModal(BuildContext context) {
   AppBar appBarForPickUp(BuildContext context) { //appbar для самовывоза
     return AppBar(
       automaticallyImplyLeading: false,
-      title: Text(selectedAddressForPickUp),
+      title: Text(widget.selectedAddressForPickUp),
       backgroundColor: const Color.fromARGB(255, 240, 240, 240),
       actions: [
         IconButton(

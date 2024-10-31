@@ -6,6 +6,7 @@ import 'package:pizza_and_flutter/widget/menu/dishes.dart';
 import 'package:pizza_and_flutter/widget/menu/dishes_model.dart';
 import 'package:pizza_and_flutter/widget/menu/menu.dart';
 import 'package:pizza_and_flutter/widget/menu/menu_main.dart';
+import 'package:pizza_and_flutter/widget/menu/pickupScreen.dart';
 import 'package:pizza_and_flutter/widget/my_orders/my_orders_main.dart';
 import 'package:provider/provider.dart';
 
@@ -172,7 +173,7 @@ class _PanelsState extends State<Panel> {
             TypeOfOrder.clearCart();
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => Menu(TypeOfOrder: 2,)),
+              MaterialPageRoute(builder: (context) => PickupScreen()),
             );
           }
         },

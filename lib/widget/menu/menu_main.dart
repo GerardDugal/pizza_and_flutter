@@ -22,65 +22,77 @@ class _MenuState extends State<Menu> {
   final ApiClient apicontroller = ApiClient();
   
   String selectedAddressForDelivery = "Выберите адрес доставки";
+
   int _selectedIndex = 1;
-  int _highlightedCategoryIndex = 0;
   final ScrollController _scrollController = ScrollController();
-  final Map<String, double> _categoryOffsets = {}; // Хранение позиций категорий
+  
+  final Map<String, double> _categoryOffsets = {}; // Смещения для категорий
+  int _highlightedCategoryIndex = 0; // Текущая выделенная категория
   late Future<void> _dishesFuture; // Создаем Future
 
   // void setIsLoading(isLoading){
   //   _isLoading = isLoading;
   // }
-
-
   @override
   void initState() {
     super.initState();
     _dishesFuture = apicontroller.addDishes(); // Сохраняем Future для единственного использования
-  
+    
     // Добавляем слушатель для скролла
     _scrollController.addListener(_onScroll);
   }
+  
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
 
-  // Метод для обновления активной категории при скролле
+  void _onCategoryLayout(String category, BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final RenderBox box = context.findRenderObject() as RenderBox;
+      final offset = box.localToGlobal(Offset.zero).dy + _scrollController.offset;
+      setState(() {
+        _categoryOffsets[category] = offset;
+      });
+    });
+  }
+
   void _onScroll() {
+    final filteredCategories = categorizedMenu.where((category) => (category['items'] as List).isNotEmpty).toList();
     final scrollOffset = _scrollController.offset;
-    for (int i = 0; i < categorizedMenu.length; i++) {
-      final offset = _categoryOffsets[categorizedMenu[i]['category_name']] ?? 0;
 
-      // Проверяем, попадает ли категория в видимую область экрана
-      if (scrollOffset >= offset - 100) {
-        setState(() {
-          _highlightedCategoryIndex = i;
-        });
+    for (int i = 0; i < filteredCategories.length; i++) {
+      final currentCategory = filteredCategories[i]['category_name'];
+      final currentOffset = _categoryOffsets[currentCategory] ?? 0;
+      final nextOffset = (i < filteredCategories.length - 1)
+          ? _categoryOffsets[filteredCategories[i + 1]['category_name']] ?? double.infinity
+          : double.infinity;
+
+      if (scrollOffset >= currentOffset - 600 && scrollOffset < nextOffset - 600) {
+        if (_highlightedCategoryIndex != i) {
+          setState(() {
+            _highlightedCategoryIndex = i;
+          });
+        }
+        break;
       }
     }
   }
 
-  // Метод для скролла к нужной категории
   void _scrollToCategory(String categoryName) {
-  final categoryOffset = _categoryOffsets[categoryName];
-  
-  if (categoryOffset != null) {
-    _scrollController.animateTo(
-      categoryOffset,
-      duration: Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
-  }
-}
+    final categoryOffset = _categoryOffsets[categoryName];
 
-  // Метод для получения позиции категории при построении
-  void _onCategoryLayout(String category, BuildContext context) {
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    final RenderBox box = context.findRenderObject() as RenderBox;
-    final offset = box.localToGlobal(Offset.zero).dy + _scrollController.offset;
-    
-    setState(() {
-      _categoryOffsets[category] = offset; // Сохраняем позицию категории
-    });
-  });
-}
+    if (categoryOffset != null) {
+      _scrollController.animateTo(
+        categoryOffset,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
 
   void _onItemTapped(int index) {
     setState(() {
@@ -123,11 +135,10 @@ class _MenuState extends State<Menu> {
   }
 
 // Метод для отображения модального окна с выбором адреса
-void _showAddressForPickUpSelectionModal(BuildContext context){
+void _showAddressForPickUpSelectionModal(BuildContext context) {
   showModalBottomSheet(
     context: context,
     builder: (BuildContext context) {
-      // final addressProvider = Provider.of<CartProvider>(context, listen: false); // Получаем провайдер
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -135,7 +146,7 @@ void _showAddressForPickUpSelectionModal(BuildContext context){
             padding: const EdgeInsets.all(8.0),
             child: Text(
               "Выберите адрес ресторана",
-              style: TextStyles.TitleInMenuDelivery
+              style: TextStyles.TitleInMenuDelivery,
             ),
           ),
           Expanded(
@@ -143,21 +154,30 @@ void _showAddressForPickUpSelectionModal(BuildContext context){
               shrinkWrap: true,
               itemCount: listOfAdressesForPickUp.length,
               itemBuilder: (BuildContext context, int index) {
-                return ListTile(
-                  title: Text(listOfAdressesForPickUp[index]['address']),
+                final address = listOfAdressesForPickUp[index]['address'] ?? '';
+                final isEven = index % 2 == 0;
+                final bgColor = isEven ? Colors.grey[200] : Colors.pink[50];
+
+                return GestureDetector(
                   onTap: () async {
-                    // Устанавливаем адрес в провайдере
-                    // addressProvider.setAddressForPickUp(listOfAdressesForPickUp[index]['address']);
-                    widget.selectedAddressForPickUp = listOfAdressesForPickUp[index]['address'];
-                    // Вызываем другие методы, если нужно
-                    apicontroller.setRestaurant(listOfAdressesForPickUp[index]['id']);
+                    widget.selectedAddressForPickUp = address;
+                    apicontroller.setRestaurant(listOfAdressesForPickUp[index]['id'] ?? '');
                     clearMenu();
                     Navigator.pop(context);
                     await apicontroller.addDishes();
-                    // Обновляем состояние, если это необходимо
-                    setState(() {}); // Перерисовка текущего виджета
-                     // Закрыть модальное окно
+                    setState(() {});
                   },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: bgColor,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    child: ListTile(
+                      leading: Icon(Icons.store, color: Colors.black54),
+                      title: Text(address, style: TextStyle(fontSize: 16)),
+                    ),
+                  ),
                 );
               },
             ),
@@ -266,95 +286,92 @@ void _showAddressForDeliverySelectionModal(BuildContext context) {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Горизонтальный список категорий
-                  Container(
-                    height: 65,
-                    padding: EdgeInsets.only(top: 10, bottom: 10),
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: filteredCategories.length, // Используем длину отфильтрованного списка
-                      itemBuilder: (context, index) {
-                        final isHighlighted = _highlightedCategoryIndex == index;
-                        return GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _highlightedCategoryIndex = index; // Обновляем выделенный индекс
-                            });
-                            _scrollToCategory(filteredCategories[index]['category_name']); // Передаем имя категории для скролла
-                          },
-                          child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                            margin: EdgeInsets.symmetric(horizontal: 10),
-                            decoration: BoxDecoration(
-                              color: isHighlighted ? Colors.red : Colors.white,
-                              borderRadius: BorderRadius.circular(5),
-                              border: isHighlighted ? Border.all(color: Colors.red, width: 2) : null,
-                            ),
-                            child: Center(
-                              child: Text(
-                                filteredCategories[index]['category_name'],
-                                style: TextStyle(
-                                  color: isHighlighted ? Colors.white : Colors.black,
-                                  fontSize: 17,
-                                  fontWeight: isHighlighted ? FontWeight.bold : FontWeight.normal,
-                                ),
+          // Горизонтальный список категорий
+                Container(
+                  height: 65,
+                  padding: EdgeInsets.only(top: 10, bottom: 10),
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: filteredCategories.length,
+                    itemBuilder: (context, index) {
+                      final isHighlighted = _highlightedCategoryIndex == index;
+                      return GestureDetector(
+                        onTap: () {
+                          _scrollToCategory(filteredCategories[index]['category_name']);
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                          margin: EdgeInsets.symmetric(horizontal: 10),
+                          decoration: BoxDecoration(
+                            color: isHighlighted ? Colors.red : Colors.white,
+                            borderRadius: BorderRadius.circular(5),
+                            border: isHighlighted ? Border.all(color: Colors.red, width: 2) : null,
+                          ),
+                          child: Center(
+                            child: Text(
+                              filteredCategories[index]['category_name'],
+                              style: TextStyle(
+                                color: isHighlighted ? Colors.white : Colors.black,
+                                fontSize: 17,
+                                fontWeight: isHighlighted ? FontWeight.bold : FontWeight.normal,
                               ),
                             ),
                           ),
-                        );
-                      },
-                    ),
+                        ),
+                      );
+                    },
                   ),
-                  // Основной скролл с категориями и блюдами
-                  Expanded(
-                    child: CustomScrollView(
-                      controller: _scrollController,
-                      slivers: [
-                        for (var category in categorizedMenu)
-                          if ((category['items'] as List).isNotEmpty)
-                            ...[
-                              // Якорь категории
-                              SliverToBoxAdapter(
-                                child: Builder(
-                                  builder: (context) {
-                                    _onCategoryLayout(category['category_name'], context);
-                                    return Padding(
-                                      padding: const EdgeInsets.fromLTRB(20, 15, 0, 15),
-                                      child: Text(
-                                        category['category_name'],
-                                        style: TextStyle(
-                                          fontSize: 30,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                ),
+                // Основной скролл с категориями и блюдами
+                Expanded(
+                  child: CustomScrollView(
+                    controller: _scrollController,
+                    slivers: [
+                      for (var category in categorizedMenu)
+                        if ((category['items'] as List).isNotEmpty)
+                          ...[
+                            // Якорь категории
+                            SliverToBoxAdapter(
+                              child: Builder(
+                                builder: (context) {
+                                  _onCategoryLayout(category['category_name'], context);
+                                  return Padding(
+                                    padding: const EdgeInsets.fromLTRB(20, 15, 0, 15),
+                                    child: Text(
+                                      category['category_name'],
+                                      style: TextStyle(
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                    );
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                            // Сетка с блюдами
+                            SliverPadding(
+                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              sliver: SliverGrid(
+                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  crossAxisSpacing: 10.0,
+                                  mainAxisSpacing: 10.0,
+                                  childAspectRatio: 400 / 590,
+                                ),
+                                delegate: SliverChildBuilderDelegate(
+                                  (context, index) {
+                                    final item = category['items'][index];
+                                    return item;
                                   },
+                                  childCount: category['items'].length,
                                 ),
                               ),
-                              // Сетка с блюдами
-                              SliverPadding(
-                                padding: const EdgeInsets.symmetric(horizontal: 20),
-                                sliver: SliverGrid(
-                                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
-                                    crossAxisSpacing: 10.0,
-                                    mainAxisSpacing: 10.0,
-                                    childAspectRatio: 400 / 590,
-                                  ),
-                                  delegate: SliverChildBuilderDelegate(
-                                    (context, index) {
-                                      final item = category['items'][index];
-                                      return item;
-                                    },
-                                    childCount: category['items'].length,
-                                  ),
-                                ),
-                              ),
-                            ],
-                      ],
-                    ),
+                            ),
+                          ],
+                    ],
                   ),
-                ],
+                ),
+              ],
               ),
             );
           }

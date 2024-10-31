@@ -6,6 +6,7 @@ import 'package:pizza_and_flutter/widget/menu/dishes_model.dart';
 import 'package:pizza_and_flutter/widget/menu/menu.dart';
 import 'package:pizza_and_flutter/widget/menu/menu_main.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
 
 class PickupScreen extends StatefulWidget {
   const PickupScreen({super.key});
@@ -20,7 +21,6 @@ class _PickupScreenState extends State<PickupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // final addressProvider = Provider.of<CartProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Text("Выберите адрес ресторана"),
@@ -32,11 +32,13 @@ class _PickupScreenState extends State<PickupScreen> {
             child: ListView.builder(
               itemCount: listOfAdressesForPickUp.length,
               itemBuilder: (BuildContext context, int index) {
-                return ListTile(
-                  title: Text(listOfAdressesForPickUp[index]['address'] ?? ''),
+                final address = listOfAdressesForPickUp[index]['address'] ?? '';
+                final isEven = index % 2 == 0;
+                final bgColor = isEven ? Colors.grey[200] : Colors.pink[50];
+
+                return GestureDetector(
                   onTap: () async {
-                    // addressProvider.setAddressForPickUp(listOfAdressesForPickUp[index]['address'] ?? '');
-                    selectedAddressForPickUp = listOfAdressesForPickUp[index]['address'] ?? '';
+                    selectedAddressForPickUp = address;
                     apicontroller.setRestaurant(listOfAdressesForPickUp[index]['id'] ?? '');
                     Navigator.push(
                       context,
@@ -48,6 +50,17 @@ class _PickupScreenState extends State<PickupScreen> {
                       ),
                     );
                   },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: bgColor,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    child: ListTile(
+                      leading: Icon(Icons.store, color: Colors.black54),
+                      title: Text(address, style: TextStyle(fontSize: 16)),
+                    ),
+                  ),
                 );
               },
             ),

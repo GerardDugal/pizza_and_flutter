@@ -295,21 +295,50 @@ Widget _buildOrderSuccessContent() {
                         bottom: BorderSide(color: Colors.grey), // Нижняя серая линия
                       ),
                     ),
-                    child: Text(
-                      "${DateFormat('EEE, MMM d').format(_selectedPickupDate!)} ${_selectedPickupTime!.format(context)}",
-                      style: TextStyle(fontSize: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "${DateFormat('EEE, MMM d').format(_selectedPickupDate!)} ${_selectedPickupTime!.format(context)}",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        Icon(Icons.access_time, color: Colors.grey),
+                      ],
                     ),
                   ),
                   SizedBox(height: 20),
                   Text("Комментарии", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   SizedBox(height: 10),
-                  TextField(
-                    controller: _commentController,
-                    decoration: InputDecoration(
-                      labelText: "Ваш комментарий",
-                      border: UnderlineInputBorder(), // Нижнее подчеркивание
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(color: Colors.grey, width: 1.0), // Нижняя серая линия
+                      ),
                     ),
-                    maxLines: 1, // Поле ввода в одну строчку
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: _commentController,
+                            decoration: InputDecoration(
+                              labelText: "Ваш комментарий",
+                              border: OutlineInputBorder(borderSide: BorderSide.none), // Без рамки
+                              contentPadding: EdgeInsets.all(1), // Отступы внутри поля
+                            ),
+                            maxLines: 1, // Поле ввода в одну строчку
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.clear, color: Colors.grey), // Иконка крестика
+                          onPressed: () {
+                            setState(() {
+                              _commentController.clear(); // Очистить текст в поле
+                            });
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                   SizedBox(height: 20),
                 ],

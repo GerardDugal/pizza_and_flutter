@@ -292,6 +292,7 @@ Widget _buildOrderSuccessContent() {
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<CartProvider>(context);
+    _selectedAddress = cart.AddressForPickUp;
     return Scaffold(
       appBar: AppBar(
         title: Text("Оформление заказа", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
@@ -308,51 +309,94 @@ Widget _buildOrderSuccessContent() {
                 children: [
                   Text("Адрес самовывоза", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   SizedBox(height: 10),
-                  DropdownButton<String>(
-                    isExpanded: true,
-                    hint: Text("Адрес компании"),
-                    value: _selectedAddress,
-                    items: listOfAdressesForPickUp
-                        .map((addressMap) => addressMap["address"])
-                        .toSet()
-                        .map((uniqueAddress) {
-                      return DropdownMenuItem<String>(
-                        value: uniqueAddress,
-                        child: Text(uniqueAddress, overflow: TextOverflow.ellipsis, maxLines: 1),
-                      );
-                    }).toList(),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        _selectedAddress = newValue;
-                      });
-                    },
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(color: Colors.grey, width: 1.0), // Нижняя серая линия
+                      ),
+                    ),
+                    child: DropdownButtonHideUnderline( // Скрывает стандартное подчеркивание DropdownButton
+                      child: DropdownButton<String>(
+                        isExpanded: true,
+                        hint: Text("Адрес компании"),
+                        value: _selectedAddress,
+                        items: listOfAdressesForPickUp
+                            .map((addressMap) => addressMap["address"])
+                            .toSet()
+                            .map((uniqueAddress) {
+                          return DropdownMenuItem<String>(
+                            value: uniqueAddress,
+                            child: Text(uniqueAddress, overflow: TextOverflow.ellipsis, maxLines: 1),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            cart.setAddressForPickUp(newValue);
+                          });
+                        },
+                      ),
+                    ),
                   ),
                   SizedBox(height: 20),
                   Text("Время самовывоза", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   SizedBox(height: 10),
+                  // Блок с выбором даты и времени
                   GestureDetector(
                     onTap: () => _selectPickupDateTime(context),
                     child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                      padding: EdgeInsets.symmetric(vertical: 15, horizontal: 0),
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(5),
+                        border: Border(
+                          bottom: BorderSide(color: Colors.grey, width: 1.0), // Нижняя серая линия
+                        ),
                       ),
-                      child: Text(
-                        _selectedPickupDateTime == null
-                            ? "Выберите дату и время"
-                            : DateFormat('E, MMM d, HH:mm', 'ru').format(_selectedPickupDateTime!),
-                        style: TextStyle(fontSize: 16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [ // Отступ между иконкой и текстом
+                          Text(
+                            _selectedPickupDateTime == null
+                                ? "Выберите дату и время"
+                                : DateFormat('E, MMM d, HH:mm', 'ru').format(_selectedPickupDateTime!),
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          Icon(Icons.access_time, color: Colors.grey),
+                        ],
                       ),
                     ),
                   ),
                   SizedBox(height: 20),
                   Text("Комментарии", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   SizedBox(height: 10),
-                  TextField(
-                    controller: _commentController,
-                    decoration: InputDecoration(labelText: "Комментарий", border: OutlineInputBorder()),
-                    maxLines: 3,
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(color: Colors.grey, width: 1.0), // Нижняя серая линия
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: _commentController,
+                            decoration: InputDecoration(
+                              labelText: "Ваш комментарий",
+                              border: OutlineInputBorder(borderSide: BorderSide.none), // Без рамки
+                              contentPadding: EdgeInsets.all(1), // Отступы внутри поля
+                            ),
+                            maxLines: 1, // Поле ввода в одну строчку
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.clear, color: Colors.grey), // Иконка крестика
+                          onPressed: () {
+                            setState(() {
+                              _commentController.clear(); // Очистить текст в поле
+                            });
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                   SizedBox(height: 20),
                 ],

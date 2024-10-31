@@ -21,6 +21,7 @@ class _PickupScreenState extends State<PickupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final cartcontroller = Provider.of<CartProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Text("Выберите адрес ресторана"),
@@ -35,10 +36,10 @@ class _PickupScreenState extends State<PickupScreen> {
                 final address = listOfAdressesForPickUp[index]['address'] ?? '';
                 final isEven = index % 2 == 0;
                 final bgColor = isEven ? Colors.grey[200] : Colors.pink[50];
-
                 return GestureDetector(
                   onTap: () async {
                     selectedAddressForPickUp = address;
+                    cartcontroller.setAddressForPickUp(address);
                     apicontroller.setRestaurant(listOfAdressesForPickUp[index]['id'] ?? '');
                     Navigator.push(
                       context,

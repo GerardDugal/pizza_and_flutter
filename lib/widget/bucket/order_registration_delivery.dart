@@ -233,14 +233,20 @@ Widget _buildOrderSuccessContent() {
                       Expanded(
                         child: TextField(
                           controller: _streetController,
-                          decoration: InputDecoration(labelText: "Улица", border: OutlineInputBorder()),
+                          decoration: InputDecoration(
+                            labelText: "Улица",
+                            border: UnderlineInputBorder(), // Нижнее подчеркивание
+                          ),
                         ),
                       ),
                       SizedBox(width: 10),
                       Expanded(
                         child: TextField(
                           controller: _houseController,
-                          decoration: InputDecoration(labelText: "Дом", border: OutlineInputBorder()),
+                          decoration: InputDecoration(
+                            labelText: "Дом",
+                            border: UnderlineInputBorder(), // Нижнее подчеркивание
+                          ),
                         ),
                       ),
                     ],
@@ -251,21 +257,30 @@ Widget _buildOrderSuccessContent() {
                       Expanded(
                         child: TextField(
                           controller: _apartmentController,
-                          decoration: InputDecoration(labelText: "Квартира", border: OutlineInputBorder()),
+                          decoration: InputDecoration(
+                            labelText: "Квартира",
+                            border: UnderlineInputBorder(), // Нижнее подчеркивание
+                          ),
                         ),
                       ),
                       SizedBox(width: 10),
                       Expanded(
                         child: TextField(
                           controller: _intercomController,
-                          decoration: InputDecoration(labelText: "Домофон", border: OutlineInputBorder()),
+                          decoration: InputDecoration(
+                            labelText: "Домофон",
+                            border: UnderlineInputBorder(), // Нижнее подчеркивание
+                          ),
                         ),
                       ),
                       SizedBox(width: 10),
                       Expanded(
                         child: TextField(
                           controller: _floorController,
-                          decoration: InputDecoration(labelText: "Этаж", border: OutlineInputBorder()),
+                          decoration: InputDecoration(
+                            labelText: "Этаж",
+                            border: UnderlineInputBorder(), // Нижнее подчеркивание
+                          ),
                         ),
                       ),
                     ],
@@ -276,8 +291,9 @@ Widget _buildOrderSuccessContent() {
                   Container(
                     padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(5),
+                      border: Border(
+                        bottom: BorderSide(color: Colors.grey), // Нижняя серая линия
+                      ),
                     ),
                     child: Text(
                       "${DateFormat('EEE, MMM d').format(_selectedPickupDate!)} ${_selectedPickupTime!.format(context)}",
@@ -289,8 +305,11 @@ Widget _buildOrderSuccessContent() {
                   SizedBox(height: 10),
                   TextField(
                     controller: _commentController,
-                    decoration: InputDecoration(labelText: "Комментарий", border: OutlineInputBorder()),
-                    maxLines: 3,
+                    decoration: InputDecoration(
+                      labelText: "Ваш комментарий",
+                      border: UnderlineInputBorder(), // Нижнее подчеркивание
+                    ),
+                    maxLines: 1, // Поле ввода в одну строчку
                   ),
                   SizedBox(height: 20),
                 ],

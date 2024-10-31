@@ -136,6 +136,7 @@ class _MenuState extends State<Menu> {
 
 // Метод для отображения модального окна с выбором адреса
 void _showAddressForPickUpSelectionModal(BuildContext context) {
+  final cartcontroller = Provider.of<CartProvider>(context, listen: false);
   showModalBottomSheet(
     context: context,
     builder: (BuildContext context) {
@@ -157,11 +158,11 @@ void _showAddressForPickUpSelectionModal(BuildContext context) {
                 final address = listOfAdressesForPickUp[index]['address'] ?? '';
                 final isEven = index % 2 == 0;
                 final bgColor = isEven ? Colors.grey[200] : Colors.pink[50];
-
                 return GestureDetector(
                   onTap: () async {
                     widget.selectedAddressForPickUp = address;
                     apicontroller.setRestaurant(listOfAdressesForPickUp[index]['id'] ?? '');
+                    cartcontroller.setAddressForPickUp(address);
                     clearMenu();
                     Navigator.pop(context);
                     await apicontroller.addDishes();

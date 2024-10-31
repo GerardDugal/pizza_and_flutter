@@ -69,7 +69,13 @@ class ApiClient {
 
       // Парсим JSON в объект Post с обновленным списком позиций
       final posts = Post.fromJson(data);
-      
+      for (var position in posts.positions) {
+        AllPositionsFromServer.add(position);
+      }
+
+      for (var entry in posts.prices.entries) {
+      AllPricesFromServer[entry.key] = entry.value;
+      }
       return posts;
     } 
     else {
@@ -78,7 +84,7 @@ class ApiClient {
   }
 
   Future<void> addDishes() async {
-    final post = await getPosts();
+    // final post = await getPosts();
     bool adressIsExist = false;
     List<int> existingRest = [];
     // final loadingState = Provider.of<CartProvider>(context, listen: false);
@@ -92,38 +98,42 @@ class ApiClient {
         (category) => category['category_id'] == id,
       );}
     
-    for (var address in post.positions) {
+    for (var address in AllPositionsFromServer) {
       if(address.address_id == _restaurant) {adressIsExist = true; break;} 
     }
 
     if(!adressIsExist){setRestaurant(0);}
 
-    for (var position in post.positions) {
+    for (var position in AllPositionsFromServer) {
       if(position.address_id == _restaurant && position.deleted == false) {existingRest.add(1); break;} 
     }
 
     if(existingRest.isEmpty){setRestaurant(0);}
 
-    for (var addingPosition in post.positions) {
+    for (var addingPosition in AllPositionsFromServer) {
           if (addingPosition.deleted == false && addingPosition.address_id == _restaurant)
             if(listOfAdditionalMenuId.contains(addingPosition.menu_cat_id)){
-              getAdditionalCategoryById(addingPosition.menu_cat_id)!['items'].add({addingPosition.title : post.prices[addingPosition.id]![0]});
-              print("${getAdditionalCategoryById(addingPosition.menu_cat_id)!['category_name']} ${addingPosition.title} : ${post.prices[addingPosition.id]![0]}");
+              getAdditionalCategoryById(addingPosition.menu_cat_id)!['items'].add({addingPosition.title : AllPricesFromServer[addingPosition.id]![0]});
+              print("${getAdditionalCategoryById(addingPosition.menu_cat_id)!['category_name']} ${addingPosition.title} : ${AllPricesFromServer[addingPosition.id]![0]}");
             }
         }
-    for (var position in post.positions) {
+    for (var position in AllPositionsFromServer) {
       final dish_name = position.title;
-      final price = post.prices[position.id];
+      final price = AllPricesFromServer[position.id];
       final weight = position.weight;
       final picture = position.image_url;
       final description = position.descr;
       if (position.deleted == false && position.address_id == _restaurant)
       {
+        if(!listOfAdditionalMenuId.contains(position.menu_cat_id) && dish_name == 'Чай')
+        categorizedMenu.firstWhere((category) => category['category_name'] == 'Горячие напитки')['items'].add(Dishes(dish_name: dish_name, price: price![0], weight: weight, picture: picture, description: description,));
+        else{
         if(!listOfAdditionalMenuId.contains(position.menu_cat_id) && position.menu_cat_id == 10659){
         getCategoryById(position.menu_cat_id)!['items'].add(Dishes(dish_name: dish_name, price: price![0], weight: weight, picture: picture, description: description,));
         }
         if(!listOfAdditionalMenuId.contains(position.menu_cat_id) && position.menu_cat_id != 10659){
         getCategoryById(position.menu_cat_id)!['items'].add(Dishes(dish_name: dish_name, price: price![0], weight: weight, picture: picture, description: description, with_fillings: false,));
+        }
         }
       }
       else{print("Элемент не должен отображаться в меню");}

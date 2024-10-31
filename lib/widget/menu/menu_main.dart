@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 
 class Menu extends StatefulWidget {
   final int TypeOfOrder;
+  
 
   const Menu({super.key, required this.TypeOfOrder});
   @override
@@ -35,18 +36,11 @@ class _MenuState extends State<Menu> {
   @override
   void initState() {
     super.initState();
-    // apicontroller.addDishes();
     _dishesFuture = apicontroller.addDishes(); // Сохраняем Future для единственного использования
+  
     // Добавляем слушатель для скролла
     _scrollController.addListener(_onScroll);
   }
-
-  // @override
-  // void didChangeDependencies() {
-  //   super.didChangeDependencies();
-  //   // Сохраняем ссылку на провайдер
-  //   apicontroller.addDishes(context);
-  // }
 
   // Метод для обновления активной категории при скролле
   void _onScroll() {
@@ -55,7 +49,7 @@ class _MenuState extends State<Menu> {
       final offset = _categoryOffsets[categorizedMenu[i]['category_name']] ?? 0;
 
       // Проверяем, попадает ли категория в видимую область экрана
-      if (scrollOffset >= offset - 200) {
+      if (scrollOffset >= offset - 100) {
         setState(() {
           _highlightedCategoryIndex = i;
         });
@@ -126,11 +120,8 @@ class _MenuState extends State<Menu> {
     setState(() {
       
     });
-    // final listen = Provider.of<CartProvider>(context, listen: false);
-    // listen.setLoading(true);
   }
 
- // Метод для отображения модального окна с выбором адреса
 // Метод для отображения модального окна с выбором адреса
 void _showAddressForPickUpSelectionModal(BuildContext context){
   showModalBottomSheet(
@@ -157,7 +148,7 @@ void _showAddressForPickUpSelectionModal(BuildContext context){
                   onTap: () async {
                     // Устанавливаем адрес в провайдере
                     addressProvider.setAddressForPickUp(listOfAdressesForPickUp[index]['address']);
-                    
+                    selectedAddressForPickUp = listOfAdressesForPickUp[index]['address'];
                     // Вызываем другие методы, если нужно
                     apicontroller.setRestaurant(listOfAdressesForPickUp[index]['id']);
                     clearMenu();
@@ -224,6 +215,9 @@ void _showAddressForDeliverySelectionModal(BuildContext context) {
         IconButton(
           icon: Icon(Icons.arrow_drop_down),
           onPressed: () {
+            setState(() {
+              
+            });
             _showAddressForPickUpSelectionModal(context);
           },
         ),

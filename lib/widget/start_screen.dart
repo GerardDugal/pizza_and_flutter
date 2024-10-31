@@ -4,6 +4,7 @@ import 'package:pizza_and_flutter/api_clients/api_client.dart';
 import 'package:pizza_and_flutter/textstyle.dart';
 import 'package:pizza_and_flutter/widget/menu/dishes.dart';
 import 'package:pizza_and_flutter/widget/menu/dishes_model.dart';
+import 'package:pizza_and_flutter/widget/menu/menu.dart';
 import 'package:pizza_and_flutter/widget/menu/menu_main.dart';
 import 'package:pizza_and_flutter/widget/my_orders/my_orders_main.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +17,13 @@ class StartScreen extends StatefulWidget {
 }
 
 class _StartScreenState extends State<StartScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    if (AllPositionsFromServer.isEmpty){ApiClient().getPosts();}
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

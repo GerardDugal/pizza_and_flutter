@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:pizza_and_flutter/domain/entity/post.dart';
 import 'package:pizza_and_flutter/widget/menu/dishes.dart';
 import 'dart:math';
+
+List<Position> AllPositionsFromServer = [];
+Map<String, List<int>> AllPricesFromServer = {};
 
 List<Map<String, dynamic>> categorizedMenu = [
   {

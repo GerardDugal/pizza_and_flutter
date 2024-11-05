@@ -39,8 +39,8 @@ class _StartScreenState extends State<StartScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Panel(name: "Мои заказы", color: Colors.red, TextColor: Colors.white, icon: Ionicons.receipt_outline),
-                    Panel(name: "Рестораны", color: Colors.black, TextColor: Colors.white, icon: Ionicons.location_outline)
+                    Panel(name: "Мои заказы", color: Colors.red, TextColor: Colors.white, picture: "images/my_orders.png"),
+                    Panel(name: "Рестораны", color: Colors.black, TextColor: Colors.white, picture: "images/location.png")
                   ],
                 ),
               ),
@@ -49,8 +49,8 @@ class _StartScreenState extends State<StartScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Panel(name: "Доставка", color: Colors.black, TextColor: Colors.white, icon: Ionicons.home_outline),
-                    Panel(name: "Самовывоз", color: Colors.red, TextColor: Colors.white, icon: Ionicons.car_sport_outline)
+                    Panel(name: "Доставка", color: Colors.black, TextColor: Colors.white, picture: "images/delivery.png"),
+                    Panel(name: "Самовывоз", color: Colors.red, TextColor: Colors.white, picture: "images/pickup.png")
                   ],
                 ),
               ),
@@ -59,7 +59,7 @@ class _StartScreenState extends State<StartScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Panel(name: "Отзыв", color: Colors.white, TextColor: Colors.black, icon: Ionicons.chatbox_ellipses_outline),
+                    Panel(name: "Отзыв", color: Colors.white, TextColor: Colors.black, picture: "images/feedback.png"),
                   ],
                 ),
               ),
@@ -102,9 +102,9 @@ class Panel extends StatefulWidget {
   final String name;
   final Color color;
   final Color TextColor;
-  final IoniconsData icon;
+  final String picture;
 
-  Panel({super.key, required this.name, required this.color, required this.TextColor, required this.icon});
+  Panel({super.key, required this.name, required this.color, required this.TextColor, required this.picture});
 
   @override
   State<Panel> createState() => _PanelsState();
@@ -134,7 +134,9 @@ class _PanelsState extends State<Panel> {
             margin: EdgeInsets.fromLTRB(12, 20, 12, 3),
             child: Column(
               children: [
-                Icon(widget.icon, color: widget.TextColor, size: 90),
+                ImageIcon(color: widget.TextColor, AssetImage(widget.picture), size: 70),
+                // Icon(widget.icon, color: widget.TextColor, size: 90),
+                SizedBox(height: 20),
                 Divider(color: widget.TextColor, thickness: 0.4),
                 Text(
                   widget.name,

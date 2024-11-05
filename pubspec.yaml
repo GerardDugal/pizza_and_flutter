@@ -68,6 +68,11 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - images/pizza_main.png
+    - images/delivery.png
+    - images/my_orders.png
+    - images/pickup.png
+    - images/location.png
+    - images/feedback.png
     - images/pizza_menu.png
     - assets/fonts/Inter-Regular.otf
 

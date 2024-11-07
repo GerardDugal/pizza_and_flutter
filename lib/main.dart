@@ -6,10 +6,14 @@ import 'package:pizza_and_flutter/widget/menu/dishes_model.dart';
 import 'package:pizza_and_flutter/widget/start_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
+import 'package:yandex_maps_mapkit_lite/init.dart' as init;
 
-
-void main() {
+void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+
+  await init.initMapkit(
+    apiKey: 'd9884e4d-0407-4150-af08-641ddca746d9'
+  );
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,

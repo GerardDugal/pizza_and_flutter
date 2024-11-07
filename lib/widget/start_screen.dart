@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:pizza_and_flutter/api_clients/api_client.dart';
+import 'package:pizza_and_flutter/carts_and_navigatios/location.dart';
 import 'package:pizza_and_flutter/textstyle.dart';
 import 'package:pizza_and_flutter/widget/menu/dishes.dart';
 import 'package:pizza_and_flutter/widget/menu/dishes_model.dart';
@@ -9,6 +12,7 @@ import 'package:pizza_and_flutter/widget/menu/menu_main.dart';
 import 'package:pizza_and_flutter/widget/menu/pickupScreen.dart';
 import 'package:pizza_and_flutter/widget/my_orders/my_orders_main.dart';
 import 'package:provider/provider.dart';
+import 'package:yandex_maps_mapkit_lite/mapkit.dart' as ymm;
 
 class StartScreen extends StatefulWidget {
   const StartScreen({super.key});
@@ -113,6 +117,7 @@ class Panel extends StatefulWidget {
 int _counter = 0;
 
 class _PanelsState extends State<Panel> {
+  ymm.MapWindow? _mapWindow;
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -168,6 +173,25 @@ class _PanelsState extends State<Panel> {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => Menu(TypeOfOrder: 1,)),
+            );
+          }
+          if (widget.name == "Рестораны") {
+            TypeOfOrder.setTypeOfOrder(1);
+            TypeOfOrder.clearCart();
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => FlutterMapWidget(onMapCreated:(mapWindow) {
+    // Здесь мы получаем доступ к объекту карты и можем взаимодействовать с ним
+    mapWindow.map.moveWithAnimation(
+        ymm.CameraPosition(
+          ymm.Point(longitude: 37.618423, latitude:55.751244),
+          zoom: 13.0,
+          azimuth: 0.0,
+          tilt: 0.0,
+        ),
+        ymm.Animation(ymm.AnimationType.Linear, duration: 1.0),
+      );
+  }, onMapDispose: () { print('Map disposed');},)),
             );
           }
           if (widget.name == "Самовывоз") {

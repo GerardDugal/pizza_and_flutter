@@ -181,7 +181,6 @@ class _PanelsState extends State<Panel> {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => FlutterMapWidget(onMapCreated:(mapWindow) {
-    // Здесь мы получаем доступ к объекту карты и можем взаимодействовать с ним
     mapWindow.map.moveWithAnimation(
         ymm.CameraPosition(
           ymm.Point(longitude: 37.618423, latitude:55.751244),

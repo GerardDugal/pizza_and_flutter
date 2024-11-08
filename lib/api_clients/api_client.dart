@@ -1,6 +1,7 @@
 import 'dart:convert'; // Для работы с JSON
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:pizza_and_flutter/carts_and_navigatios/delivery_zone.dart';
 import 'package:pizza_and_flutter/domain/entity/addressesdata.dart';
 import 'package:pizza_and_flutter/domain/entity/post.dart';
 import 'package:pizza_and_flutter/widget/addresses/addresses.dart';
@@ -9,6 +10,7 @@ import 'package:pizza_and_flutter/widget/menu/dishes_model.dart';
 import 'package:pizza_and_flutter/widget/menu/menu.dart';
 import 'package:pizza_and_flutter/widget/menu/menu_main.dart';
 import 'package:provider/provider.dart';
+import 'package:yandex_maps_mapkit_lite/mapkit.dart' as yym;
 
 class ApiClient {
   final int limit; // Максимальное количество позиций для парсинга
@@ -43,7 +45,18 @@ class ApiClient {
   Future<void> addAddresses() async {
     final allAddresses = await getAdresses();
     for (var address in allAddresses.addresses) {
-      if(address.deleted == false){ listOfAdressesForPickUp.add({"id" : address.id, "address" : address.address});}
+      if(address.deleted == false){ listOfAdressesForPickUp.add({"id" : address.id, "address" : address.address});
+      List<String> coordinates = address.delivery_region!
+        .replaceAll(RegExp(r'[\[\]]'), '')
+        .split(',');
+      for (int i = 0; i < coordinates.length; i += 2) {
+    double latitude = double.parse(coordinates[i]);
+    double longitude = double.parse(coordinates[i + 1]);
+    point.add(yym.Point(latitude: latitude, longitude: longitude));
+    }
+    points.add(List<yym.Point>.from(point)); // Добавляем копию `point` в `points`
+    point.clear();
+      }
     }
     print(listOfAdressesForPickUp);
   }

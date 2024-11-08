@@ -45,8 +45,11 @@ class ApiClient {
   Future<void> addAddresses() async {
     final allAddresses = await getAdresses();
     for (var address in allAddresses.addresses) {
-      if(address.deleted == false){ listOfAdressesForPickUp.add({"id" : address.id, "address" : address.address});
-      List<String> coordinates = address.delivery_region!
+      if(address.deleted == false){ listOfAdressesForPickUp.add({"id" : address.id, "address" : address.address});}
+      
+      }
+      for (var reg in allAddresses.regions) {
+List<String> coordinates = reg.vertices!
         .replaceAll(RegExp(r'[\[\]]'), '')
         .split(',');
       for (int i = 0; i < coordinates.length; i += 2) {
@@ -54,10 +57,9 @@ class ApiClient {
     double longitude = double.parse(coordinates[i + 1]);
     point.add(yym.Point(latitude: latitude, longitude: longitude));
     }
-    points.add(List<yym.Point>.from(point)); // Добавляем копию `point` в `points`
+    points.add(List<yym.Point>.from(point));
     point.clear();
       }
-    }
     print(listOfAdressesForPickUp);
   }
 

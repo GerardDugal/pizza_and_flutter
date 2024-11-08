@@ -106,7 +106,7 @@ final class FlutterMapWidgetState extends State<FlutterMapWidget> {
       _mapWindow = it;
       for (final polygon in polygons) {
       it.map.mapObjects.addPolygon(polygon)
-      ..strokeWidth = 5.0
+      ..strokeWidth = 1.0
       ..strokeColor = getRandomColor()
       ..fillColor = getRandomColor().withAlpha(130);
     }

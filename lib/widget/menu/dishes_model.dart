@@ -35,6 +35,7 @@ class CartProvider with ChangeNotifier {
   double totalToPay = 0.0; // Всего к оплате
   int _TypeOfOrder = 0;
   String _AddressForPickUp = "Выберете адрес ресторана"; 
+  int _AddressForPickUpId = 0;
   // bool _isLoading = true;
 
   List<CartItem> get items => _items;
@@ -53,12 +54,15 @@ class CartProvider with ChangeNotifier {
 
   int get TypeOfOrder => _TypeOfOrder;
 
-  void setAddressForPickUp(AddressForPickUp){
+  void setAddressForPickUp(AddressForPickUp, id){
     _AddressForPickUp = AddressForPickUp;
+    _AddressForPickUpId = id;
     notifyListeners();
   }
 
   String get AddressForPickUp => _AddressForPickUp;
+
+  int get AddressForPickUpId => _AddressForPickUpId;
 
   void addItem(String name, int price, String weight, String picture, String description, String filling, List<String> adding) {
     // Проверка, есть ли уже такой товар в корзине

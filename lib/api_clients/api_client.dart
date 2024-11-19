@@ -154,6 +154,98 @@ List<String> coordinates = reg.vertices!
       else{print("Элемент не должен отображаться в меню");}
     }
   }
+
+  Future<void> sendOrder(int addressId, double price, List<CartItem> items) async {
+  // URL для отправки запроса
+  const url = 'http://api.apps.inforino.ru/company/74883/order/v2/create?device=android&udid=709588953abe4f97';
+
+  for (var item in items) {
+    
+  }
+  // Тело POST-запроса
+  final body = {
+    "discount": 5.0,
+    "subtotal": price,
+    "address_id": addressId,
+    "paid_with_bonuses": 0.0,
+    "date": "1731492645",
+    "paid_with_deposit": 0.0,
+    "data_additional_raw": {
+      "persons": "",
+      "auto": "",
+      "arrival_time": "13 ноября в 13:30",
+      "comment": "",
+      "promo_code": "RU",
+      "arrival_time_unixtime": 1731493800
+    },
+    "data_order_raw": [
+      {
+        "price": 77.0,
+        "name": "Coca cola",
+        "position_id": 931271,
+        "quantity": 1,
+        "position_type_id": 1
+      },
+      {
+        "price": 590.0,
+        "article": "Пепперони Премиум\nАнанас",
+        "modifiers": {
+          "954615": 1,
+          "954624": 1
+        },
+        "name": "Маргарита 42 см",
+        "position_id": 931279,
+        "quantity": 1,
+        "position_type_id": 10
+      },
+      {
+        "price": 499.0,
+        "article": "Без добавок\nБез добавок",
+        "modifiers": {
+          "954629": 1,
+          "954608": 1
+        },
+        "name": "Чесночная 42 см",
+        "position_id": 952403,
+        "quantity": 1,
+        "position_type_id": 10
+      }
+    ],
+    "payform": "online",
+    "total": 1107.7,
+    "type_id": 1,
+    "data_user_raw": {
+      "additional": {},
+      "birthday": "",
+      "email": "",
+      "gender": "",
+      "name_first": "Konstantin Ustinov",
+      "name_last": "",
+      "name_middle": "",
+      "phone": "+7 926 948-20-68"
+    }
+  };
+
+  try {
+    // Выполнение POST-запроса
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: jsonEncode(body), // Преобразование тела в JSON
+    );
+
+    // Проверка ответа
+    if (response.statusCode == 200) {
+      print("Order sent successfully: ${response.body}");
+    } else {
+      print("Failed to send order: ${response.statusCode}, ${response.body}");
+    }
+  } catch (e) {
+    print("Error sending order: $e");
+  }
+}
 }
 
 

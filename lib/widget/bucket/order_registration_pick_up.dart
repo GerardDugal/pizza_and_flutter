@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
+import 'package:pizza_and_flutter/api_clients/api_client.dart';
 import 'package:provider/provider.dart';
 import 'package:pizza_and_flutter/widget/addresses/addresses.dart';
 import 'package:pizza_and_flutter/widget/menu/dishes.dart';
@@ -285,7 +286,7 @@ Widget _buildOrderSuccessContent() {
       pickup_adress: _selectedAddress.toString(),
       pickup_time: _selectedPickupDateTime.toString(),
     ));
-
+    ApiClient().sendOrder(cart.AddressForPickUpId, cart.calctotalToPay(), ListOfDishes);
     cart.clearCart();
   }
 
@@ -331,7 +332,7 @@ Widget _buildOrderSuccessContent() {
                         }).toList(),
                         onChanged: (String? newValue) {
                           setState(() {
-                            cart.setAddressForPickUp(newValue);
+                            cart.setAddressForPickUp(newValue, listOfAdressesForPickUp.where((address) => address['address'] == newValue));
                           });
                         },
                       ),

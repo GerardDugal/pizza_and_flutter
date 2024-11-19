@@ -34,12 +34,13 @@ class _PickupScreenState extends State<PickupScreen> {
               itemCount: listOfAdressesForPickUp.length,
               itemBuilder: (BuildContext context, int index) {
                 final address = listOfAdressesForPickUp[index]['address'] ?? '';
+                final addressid = listOfAdressesForPickUp[index]['id'] ?? '';
                 final isEven = index % 2 == 0;
                 final bgColor = isEven ? Colors.grey[200] : Colors.pink[50];
                 return GestureDetector(
                   onTap: () async {
                     selectedAddressForPickUp = address;
-                    cartcontroller.setAddressForPickUp(address);
+                    cartcontroller.setAddressForPickUp(address, addressid);
                     apicontroller.setRestaurant(listOfAdressesForPickUp[index]['id'] ?? '');
                     Navigator.push(
                       context,

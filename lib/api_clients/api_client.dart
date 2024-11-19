@@ -159,9 +159,11 @@ List<String> coordinates = reg.vertices!
   // URL для отправки запроса
   const url = 'http://api.apps.inforino.ru/company/74883/order/v2/create?device=android&udid=709588953abe4f97';
 
+  
   for (var item in items) {
     
   }
+
   // Тело POST-запроса
   final body = {
     "discount": 5.0,
